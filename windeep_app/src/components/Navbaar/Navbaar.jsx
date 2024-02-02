@@ -65,13 +65,7 @@ export default function Navbaar({CURRENT_USER,USER_TYPES}) {
                                 <li className="nav-item ml-3">
                                 <AuthorizedElement  CURRENT_USER={CURRENT_USER} allowedUserTypes={[USER_TYPES.ADMIN_USER]}><NavLink className="nav-link" activclassname="active_navbar" to="/add">Add</NavLink></AuthorizedElement>
                                 </li>
-                                <li className="nav-item ml-3">
-                                <AuthorizedElement CURRENT_USER={CURRENT_USER} allowedUserTypes={[USER_TYPES.ADMIN_USER]}>
-                                <NavLink className="nav-link" activeClassName="active_navbar"    onClick={handleCalculatorClick}>
-                                    Calculator
-                                </NavLink>
-                                </AuthorizedElement>
-                            </li>
+                               
                             </ul>
                         </div>
 
@@ -88,15 +82,6 @@ export default function Navbaar({CURRENT_USER,USER_TYPES}) {
                                 <NavDropdown.Item ><Link to="/" style={{ color: "black", textDecoration: "none" }} ><BiLogOut /> Sign Out</Link></NavDropdown.Item>
                             </NavDropdown>
                         }
-
-<Modal show={showCalculatorModal} onHide={handleCloseCalculatorModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Calculator</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Calculator onClose={handleCloseCalculatorModal} existingData={existingData} />
-        </Modal.Body>
-      </Modal>
 
                     </div>
                 </nav>

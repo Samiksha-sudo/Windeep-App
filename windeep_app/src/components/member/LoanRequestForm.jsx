@@ -9,8 +9,7 @@ import { useParams,useLocation } from 'react-router-dom';
 import image1 from "../../assets/images/photoImage.jpg";
 import { useNavigate } from "react-router-dom";
 import { TextField, FormControl, InputAdornment, Container, IconButton, Alert, FormHelperText } from "@mui/material";
-import Calculate from './Calculate.jsx'
-import Detail from './Detail.jsx'
+import {memberDetails} from "../../utils/database"
 
 export default function LoanRequestForm({CURRENT_USER,USER_TYPES}) {
 
@@ -38,27 +37,28 @@ export default function LoanRequestForm({CURRENT_USER,USER_TYPES}) {
     const [detail, setDetail] = useState(false);
     const [iscalculated, setIscalculated] = useState(false);
     const [isDivVisible, setDivVisibility] = useState(false);
-    const [viewRequests, setViewRequests] = useState(false);
+    const [viewRequests, setViewRequests] = useState([]);
 
-  const handleViewRequestsClick = () => {
+  const handleViewRequestsClick = async () => {
     setDivVisibility(!isDivVisible);
-    fetch('http://localhost:5000/member/requestLoan', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id:id      })
-    })
-      .then(response => response.json())
-      .then(result => {
-        console.log('API Response: handleViewRequestsClickhandleViewRequestsClickhandleViewRequestsClickhandleViewRequestsClick', result.payload[0].result);
-        setViewRequests(result.payload[0].result)
-        // Set the data received from the API to the state
-      })
-      .catch(error => {
-        console.error('API Error:', error);
-      });
+    setViewRequests(memberDetails);
+  //  await fetch('http://localhost:9000/member/requestLoan', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       id:id      })
+  //   })
+  //     .then(response => response.json())
+  //     .then(result => {
+  //       console.log('API Response: handleViewRequestsClickhandleViewRequestsClickhandleViewRequestsClickhandleViewRequestsClick', result.payload[0].result);
+  //       setViewRequests(result.payload[0].result);
+  //       // Set the data received from the API to the state
+  //     })
+  //     .catch(error => {
+  //       console.error('API Error:', error);
+  //     });
   };
 
 
@@ -148,7 +148,7 @@ const calculateInterest = (memberId) => {
 const sendRequest= () =>{
     console.log("id",id);
 
-      fetch('http://localhost:5000/member/requestLoan/add', {
+      fetch('http://localhost:9000/member/requestLoan/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -541,7 +541,9 @@ const calculateloan = () => {
               </div>
           </Container>
           {isDivVisible && (
+           
             <>
+            {console.log("viewRequests",viewRequests)}
             {viewRequests.map((ele, index) => (
               <div className={styles.viewRequests}>
                 <Grid container spacing={1}>

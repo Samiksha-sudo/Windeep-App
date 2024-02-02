@@ -31,6 +31,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import {memberLoan} from "../../utils/database/data"
 
 export default function SingleMemberLoan({ CURRENT_USER, USER_TYPES }) {
   const navigate = useNavigate();
@@ -196,70 +197,81 @@ export default function SingleMemberLoan({ CURRENT_USER, USER_TYPES }) {
     console.log("formData", formData);
     formData.member_id = id;
 
-    await fetch("http://localhost:5000/member/loan/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log("API Response:", result.payload[0].result);
-        // Set the data received from the API to the state
-        setData(result.payload[0].result);
-        setFormData({
-          reason: "",
-          loan_type: "",
-          totalLoan: "",
-          unit: "months",
-        });
-        setIsGridOpen(!isGridOpen);
-      })
-      .catch((error) => {
-        console.error("API Error:", error);
-      });
+    // await fetch("http://localhost:9000/member/loan/add", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(formData),
+    // })
+    //   .then((response) => response.json())
+    //   .then((result) => {
+    //     console.log("API Response:", result.payload[0].result);
+    //     // Set the data received from the API to the state
+    //     setData(result.payload[0].result);
+    //     setFormData({
+    //       reason: "",
+    //       loan_type: "",
+    //       totalLoan: "",
+    //       unit: "months",
+    //     });
+    //     setIsGridOpen(!isGridOpen);
+    //   })
+    //   .catch((error) => {
+    //     console.error("API Error:", error);
+    //   });
 
-    await fetch("http://localhost:5000/member/loan", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: id,
-      }),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log("API Response:", result.payload[0].result);
-        // Set the data received from the API to the state
-        setData(result.payload[0].result);
-      })
-      .catch((error) => {
-        console.error("API Error:", error);
+      setFormData({
+        reason: "",
+        loan_type: "",
+        totalLoan: "",
+        unit: "months",
       });
+      setIsGridOpen(!isGridOpen);
+
+    // await fetch("http://localhost:9000/member/loan", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     id: id,
+    //   }),
+    // })
+    //   .then((response) => response.json())
+    //   .then((result) => {
+    //     console.log("API Response:", result.payload[0].result);
+    //     // Set the data received from the API to the state
+    //     setData(result.payload[0].result);
+    //   })
+    //   .catch((error) => {
+    //     console.error("API Error:", error);
+    //   });
   };
 
+  setData(memberLoan)
+
   useEffect(() => {
+    setData(memberLoan)
     // Make the API request when the component mounts
-    fetch("http://localhost:5000/member/loan", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: id,
-      }),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log("API Response:", result.payload[0].result);
-        // Set the data received from the API to the state
-        setData(result.payload[0].result);
-      })
-      .catch((error) => {
-        console.error("API Error:", error);
-      });
+    // fetch("http://localhost:a /member/loan", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     id: id,
+    //   }),
+    // })
+    //   .then((response) => response.json())
+    //   .then((result) => {
+    //     console.log("API Response:", result.payload[0].result);
+    //     // Set the data received from the API to the state
+    //     setData(result.payload[0].result);
+    //   })
+    //   .catch((error) => {
+    //     console.error("API Error:", error);
+    //   });
   }, [id]);
 
   return (

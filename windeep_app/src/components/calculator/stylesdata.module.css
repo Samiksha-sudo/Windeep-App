@@ -1,0 +1,28 @@
+.result {
+    height: 60px;
+    background-color: #eee8e8;
+    width: 100%;
+  }
+  
+  .result p {
+    font-size: 40px;
+    margin: 5px;
+  
+  }
+  
+  .calculatorBody {
+    max-width: 400px;
+    margin: auto;
+  }
+  
+  .buttonCacli {
+    display: block;
+  }
+  
+  .buttonCacli button {
+    height: 25px;
+    font-size: 15px;
+    margin: 5px;
+    padding: 5px;
+  }
+  

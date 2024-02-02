@@ -161,7 +161,7 @@ export default function GuranteeRequests({CURRENT_USER,USER_TYPES}) {
           Housing Loan
         </Typography>
         <Typography variant="body2">
-          Monthly EMI : ₹ 5000
+          Monthly EMI : ₹ 9000
           <br />
           Loan Start Date: 12/12/2024
           <br />
@@ -188,7 +188,7 @@ export default function GuranteeRequests({CURRENT_USER,USER_TYPES}) {
           Housing Loan
         </Typography>
         <Typography variant="body2">
-          Monthly EMI : ₹ 5000
+          Monthly EMI : ₹ 9000
           <br />
           Loan Start Date: 12/12/2024
           <br />
@@ -214,7 +214,7 @@ export default function GuranteeRequests({CURRENT_USER,USER_TYPES}) {
           Housing Loan
         </Typography>
         <Typography variant="body2">
-          Monthly EMI : ₹ 5000
+          Monthly EMI : ₹ 9000
           <br />
           Loan Start Date: 12/12/2024
           <br />

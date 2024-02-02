@@ -3,6 +3,7 @@ import Footer from "../Footer/Footer";
 import Navbaar from "../Navbaar/Navbaar";
 import image1 from "../../assets/images/photoImage.jpg";
 import { useNavigate } from "react-router-dom";
+import Calculator from "../calculator/CalculatorMain";
 
 import {
   Accordion,
@@ -37,6 +38,7 @@ import SingleLoanCalculator from "./SingleLoanCalculator";
 import LoanRequestForm from "./LoanRequestForm";
 import LoanForm from "./LoanForm";
 import GuranteeForm from "./GuranteeForm";
+import ViewRequests from "./ViewRequests";
 
 
 export default function ParentTabs({CURRENT_USER,USER_TYPES}) {
@@ -160,11 +162,7 @@ export default function ParentTabs({CURRENT_USER,USER_TYPES}) {
               <Typography>Calculator</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                eget.
-              </Typography>
+              <Calculator/>
             </AccordionDetails>
           </Accordion>
         </div>
@@ -176,10 +174,11 @@ export default function ParentTabs({CURRENT_USER,USER_TYPES}) {
             <Tab label="Loan" {...a11yProps(1)} />
             <Tab label="Loan Calculator" {...a11yProps(2)} />
             <Tab label="Request Loan" {...a11yProps(3)} />
-            <Tab label="Loan Form" {...a11yProps(4)} />
-            <Tab label="Gurantor Form" {...a11yProps(5)} />
-            <Tab label="Finance Payment" {...a11yProps(6)} />
-            <Tab label="Bonus Distribution" {...a11yProps(7)} />
+            <Tab label="View Requests" {...a11yProps(4)} />
+            <Tab label="Loan Form" {...a11yProps(5)} />
+            <Tab label="Gurantor Form" {...a11yProps(6)} />
+            <Tab label="Finance Payment" {...a11yProps(7)} />
+            <Tab label="Bonus Distribution" {...a11yProps(8)} />
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
@@ -195,15 +194,18 @@ export default function ParentTabs({CURRENT_USER,USER_TYPES}) {
           <LoanRequestForm/>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={4}>
-          <LoanForm/>
+          <ViewRequests/>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={5}>
-          <GuranteeForm/>
+          <LoanForm/>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={6}>
-          <SingleLoanCalculator/>
+          <GuranteeForm/>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={7}>
+          <SingleLoanCalculator/>
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={8}>
           <SingleLoanCalculator/>
         </CustomTabPanel>
 

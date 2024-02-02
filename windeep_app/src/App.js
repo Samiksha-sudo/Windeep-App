@@ -42,13 +42,13 @@
                 }> 
               <Routes>
               <Route path="/member/login" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.PUBLIC,USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><Login USER={USER_TYPES.NORMAL} /></AuthorizedElement>} />
+              
               <Route path="/admin/login" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.PUBLIC,USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><Login 
               USER={USER_TYPES.ADMIN_USER}/></AuthorizedElement>} />
 
-              
-                {
-                  CURRENT_USER == "Admin User" ?  <Route path="/" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER]}><Home CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />: <Route path="/" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL,USER_TYPES.PUBLIC]}><Dashboard  CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}  /></AuthorizedElement>} />
-                }
+              <Route path="/home" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER]}><Home CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+
+              <Route path="/" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL,USER_TYPES.PUBLIC]}><Dashboard  CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}  /></AuthorizedElement>} />
 
               <Route path='/member' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER]}>
                 <Member CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES} AuthorizedElement={AuthorizedElement}/></AuthorizedElement>} />

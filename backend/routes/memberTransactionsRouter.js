@@ -1,6 +1,9 @@
 // memberTransactionsRouter.js
 import express from 'express';
-
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'  
+const saltRounds = 10 
+const jwtSecret = "windeepApp" 
 const memberTransactionsRouter = express.Router();
 
 import { sequelize, QueryTypes } from '../config/connection.js';
