@@ -3,7 +3,7 @@ import styles from "./BasicInfo.module.css";
 import { Grid } from '@mui/material'
 import { useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
-import {memberDetails} from "../../utils/database/data"
+// import {memberDetails} from "../../utils/database/data"
 export default function ViewRequests() {
   const { id } = useParams();
   console.log(id);
@@ -17,23 +17,23 @@ export default function ViewRequests() {
     const [viewRequests, setViewRequests] = useState([]);
 
   useEffect(() => {
-    setViewRequests(memberDetails);
-    // fetch('http://localhost:9000/member/requestLoan', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //       id:id      })
-    //   })
-    //     .then(response => response.json())
-    //     .then(result => {
-    //       console.log('API Response: ', result.payload[0].result);
-    //       setViewRequests(result.payload[0].result);
-    //     })
-    //     .catch(error => {
-    //       console.error('API Error:', error);
-    //     });
+    // setViewRequests(memberDetails);
+    fetch('http://localhost:9000/member/requestLoan', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id:id      })
+      })
+        .then(response => response.json())
+        .then(result => {
+          console.log('API Response: ', result.payload[0].result);
+          setViewRequests(result.payload[0].result);
+        })
+        .catch(error => {
+          console.error('API Error:', error);
+        });
   }, []);
 
 

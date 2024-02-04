@@ -29,7 +29,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {shares} from "../../utils/database/data"
+// import {shares} from "../../utils/database/data"
 export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
   const navigate = useNavigate();
   console.log("CURRENT_USER", CURRENT_USER);
@@ -75,26 +75,26 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
 
   useEffect(() => {
     // Make the API request when the component mounts
-    // fetch("http://localhost:9000/member/shares", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     id: id,
-    //   }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((result) => {
-    //     console.log("API Response:", result.payload[0].result);
-    //     // Set the data received from the API to the state
-    //     setData(result.payload[0].result);
-    //   })
-    //   .catch((error) => {
-    //     console.error("API Error:", error);
-    //   });
+    fetch("http://localhost:9000/member/shares", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        console.log("API Response:", result.payload[0].result);
+        // Set the data received from the API to the state
+        setData(result.payload[0].result);
+      })
+      .catch((error) => {
+        console.error("API Error:", error);
+      });
 
-      setData(shares);
+      // setData(shares);
   }, [id]);
 
   const handleEdit = (row) => {
@@ -124,66 +124,66 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     formData.member_id = data[0].member_id;
     formData.update_by = "Pradeep Khengare";
 
-    // await fetch("http://localhost:9000/member/shares/edit", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(formData),
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     console.log("Data inserted successfully:", data);
+    await fetch("http://localhost:9000/member/shares/edit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Data inserted successfully:", data);
 
-    //     // Optionally, you can reset the form fields after successful insertion
-    //     setFormData({
-    //       id: "",
-    //       date: "",
-    //       member_id: "",
-    //       share_id: "",
-    //       monthly_contribution: "",
-    //       total_contribution: "",
-    //       bonus: "",
-    //       remarks: "",
-    //       admin_remarks: "",
-    //     });
+        // Optionally, you can reset the form fields after successful insertion
+        setFormData({
+          id: "",
+          date: "",
+          member_id: "",
+          share_id: "",
+          monthly_contribution: "",
+          total_contribution: "",
+          bonus: "",
+          remarks: "",
+          admin_remarks: "",
+        });
 
-    //     // Reload the page after successful submission
-    //     // window.location.reload();
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error inserting data:", error);
-    //   });
-      setFormData({
-        id: "",
-        date: "",
-        member_id: "",
-        share_id: "",
-        monthly_contribution: "",
-        total_contribution: "",
-        bonus: "",
-        remarks: "",
-        admin_remarks: "",
+        // Reload the page after successful submission
+        // window.location.reload();
+      })
+      .catch((error) => {
+        console.error("Error inserting data:", error);
       });
-    // await fetch("http://localhost:9000/member/shares", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     id: id,
-    //   }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((result) => {
-    //     console.log("API Response:", result.payload[0].result);
-    //     // Set the data received from the API to the state
-    //     setData(result.payload[0].result);
-    //   })
-    //   .catch((error) => {
-    //     console.error("API Error:", error);
-    //   });
-    setData(shares);
+      // setFormData({
+      //   id: "",
+      //   date: "",
+      //   member_id: "",
+      //   share_id: "",
+      //   monthly_contribution: "",
+      //   total_contribution: "",
+      //   bonus: "",
+      //   remarks: "",
+      //   admin_remarks: "",
+      // });
+    await fetch("http://localhost:9000/member/shares", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        console.log("API Response:", result.payload[0].result);
+        // Set the data received from the API to the state
+        setData(result.payload[0].result);
+      })
+      .catch((error) => {
+        console.error("API Error:", error);
+      });
+    // setData(shares);
 
     setIsGridOpen(false);
     setTotalShares(totalshares());
@@ -195,71 +195,71 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     formData.member_id = data[0].member_id;
     formData.update_by = "Pradeep Khengare";
 
-    // await fetch("http://localhost:9000/member/shares/delete", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     id: row.id,
-    //     member_id: data[0].member_id,
-    //   }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     console.log("Data inserted successfully:", data);
+    await fetch("http://localhost:9000/member/shares/delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: row.id,
+        member_id: data[0].member_id,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Data inserted successfully:", data);
 
-    //     // Optionally, you can reset the form fields after successful insertion
-    //     setFormData({
-    //       id: "",
-    //       date: "",
-    //       member_id: "",
-    //       share_id: "",
-    //       monthly_contribution: "",
-    //       total_contribution: "",
-    //       bonus: "",
-    //       remarks: "",
-    //       admin_remarks: "",
-    //     });
+        // Optionally, you can reset the form fields after successful insertion
+        setFormData({
+          id: "",
+          date: "",
+          member_id: "",
+          share_id: "",
+          monthly_contribution: "",
+          total_contribution: "",
+          bonus: "",
+          remarks: "",
+          admin_remarks: "",
+        });
 
-    //     // Reload the page after successful submission
-    //     // window.location.reload();
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error inserting data:", error);
-    //   });
-
-      setFormData({
-        id: "",
-        date: "",
-        member_id: "",
-        share_id: "",
-        monthly_contribution: "",
-        total_contribution: "",
-        bonus: "",
-        remarks: "",
-        admin_remarks: "",
+        // Reload the page after successful submission
+        // window.location.reload();
+      })
+      .catch((error) => {
+        console.error("Error inserting data:", error);
       });
 
-    // await fetch("http://localhost:9000/member/shares", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     id: id,
-    //   }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((result) => {
-    //     console.log("API Response:", result.payload[0].result);
-    //     // Set the data received from the API to the state
-    //     setData(result.payload[0].result);
-    //   })
-    //   .catch((error) => {
-    //     console.error("API Error:", error);
-    //   });
-    setData(shares);
+      // setFormData({
+      //   id: "",
+      //   date: "",
+      //   member_id: "",
+      //   share_id: "",
+      //   monthly_contribution: "",
+      //   total_contribution: "",
+      //   bonus: "",
+      //   remarks: "",
+      //   admin_remarks: "",
+      // });
+
+    await fetch("http://localhost:9000/member/shares", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        console.log("API Response:", result.payload[0].result);
+        // Set the data received from the API to the state
+        setData(result.payload[0].result);
+      })
+      .catch((error) => {
+        console.error("API Error:", error);
+      });
+    // setData(shares);
 
     setIsGridOpen(false);
     setTotalShares(totalshares());
@@ -300,68 +300,68 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     console.log("--------------------->", formData);
 
     // Send the form data to the server
-    // await fetch("http://localhost:9000/member/shares/add", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(formData),
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     console.log("Data inserted successfully:", data);
+    await fetch("http://localhost:9000/member/shares/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Data inserted successfully:", data);
 
-    //     // Optionally, you can reset the form fields after successful insertion
-    //     setFormData({
-    //       id: "",
-    //       date: "",
-    //       member_id: "",
-    //       share_id: "",
-    //       monthly_contribution: "",
-    //       total_contribution: "",
-    //       bonus: "",
-    //       remarks: "",
-    //       admin_remarks: "",
-    //     });
+        // Optionally, you can reset the form fields after successful insertion
+        setFormData({
+          id: "",
+          date: "",
+          member_id: "",
+          share_id: "",
+          monthly_contribution: "",
+          total_contribution: "",
+          bonus: "",
+          remarks: "",
+          admin_remarks: "",
+        });
 
-    //     // Reload the page after successful submission
-    //     // window.location.reload();
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error inserting data:", error);
-    //   });
-
-      setFormData({
-        id: "",
-        date: "",
-        member_id: "",
-        share_id: "",
-        monthly_contribution: "",
-        total_contribution: "",
-        bonus: "",
-        remarks: "",
-        admin_remarks: "",
+        // Reload the page after successful submission
+        // window.location.reload();
+      })
+      .catch((error) => {
+        console.error("Error inserting data:", error);
       });
 
-    // await fetch("http://localhost:9000/member/shares", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     id: id,
-    //   }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((result) => {
-    //     console.log("API Response:", result.payload[0].result);
-    //     // Set the data received from the API to the state
-    //     setData(result.payload[0].result);
-    //   })
-    //   .catch((error) => {
-    //     console.error("API Error:", error);
-    //   });
-      setData(shares);
+      // setFormData({
+      //   id: "",
+      //   date: "",
+      //   member_id: "",
+      //   share_id: "",
+      //   monthly_contribution: "",
+      //   total_contribution: "",
+      //   bonus: "",
+      //   remarks: "",
+      //   admin_remarks: "",
+      // });
+
+    await fetch("http://localhost:9000/member/shares", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        console.log("API Response:", result.payload[0].result);
+        // Set the data received from the API to the state
+        setData(result.payload[0].result);
+      })
+      .catch((error) => {
+        console.error("API Error:", error);
+      });
+      // setData(shares);
     setIsGridOpen(false);
     setTotalShares(totalshares());
   };
@@ -400,48 +400,48 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     setIsGridOpen(!isGridOpen);
     setShowSubmitButton(true);
     setShowEditButton(false);
-    // fetch("http://localhost:9000/member/shares/totalContribution", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     id: id,
-    //   }),
-    // })
-    //   .then((response) => response.json())
-    //   .then((result) => {
-    //     console.log(
-    //       "API Response handleAddClickhandleAddClickhandleAddClickhandleAddClickhandleAddClick:",
-    //       result.payload[0].result
-    //     );
-    //     setFormData({
-    //       id: "",
-    //       date: "",
-    //       member_id: "",
-    //       monthly_contribution:
-    //         result.payload[0].result[0].monthly_contribution,
-    //       total_contribution: result.payload[0].result[0].totalContribution,
-    //       bonus: "",
-    //       remarks: "",
-    //       admin_remarks: "",
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     console.error("API Error:", error);
-    //   });
-
-      setFormData({
-        id: "",
-        date: "",
-        member_id: "",
-        monthly_contribution:
-          result.payload[0].result[0].monthly_contribution,
-        total_contribution: result.payload[0].result[0].totalContribution,
-        bonus: "",
-        remarks: "",
-        admin_remarks: "",
+    fetch("http://localhost:9000/member/shares/totalContribution", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(
+          "API Response handleAddClickhandleAddClickhandleAddClickhandleAddClickhandleAddClick:",
+          result.payload[0].result
+        );
+        setFormData({
+          id: "",
+          date: "",
+          member_id: "",
+          monthly_contribution:
+            result.payload[0].result[0].monthly_contribution,
+          total_contribution: result.payload[0].result[0].totalContribution,
+          bonus: "",
+          remarks: "",
+          admin_remarks: "",
+        });
+      })
+      .catch((error) => {
+        console.error("API Error:", error);
       });
+
+      // setFormData({
+      //   id: "",
+      //   date: "",
+      //   member_id: "",
+      //   monthly_contribution:
+      //     result.payload[0].result[0].monthly_contribution,
+      //   total_contribution: result.payload[0].result[0].totalContribution,
+      //   bonus: "",
+      //   remarks: "",
+      //   admin_remarks: "",
+      // });
   };
   useEffect(() => {
     // Set initial values from the first record in the data array

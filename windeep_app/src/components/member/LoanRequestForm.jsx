@@ -9,7 +9,7 @@ import { useParams,useLocation } from 'react-router-dom';
 import image1 from "../../assets/images/photoImage.jpg";
 import { useNavigate } from "react-router-dom";
 import { TextField, FormControl, InputAdornment, Container, IconButton, Alert, FormHelperText } from "@mui/material";
-import {memberDetails} from "../../utils/database"
+// import {memberDetails} from "../../utils/database"
 
 export default function LoanRequestForm({CURRENT_USER,USER_TYPES}) {
 
@@ -41,24 +41,24 @@ export default function LoanRequestForm({CURRENT_USER,USER_TYPES}) {
 
   const handleViewRequestsClick = async () => {
     setDivVisibility(!isDivVisible);
-    setViewRequests(memberDetails);
-  //  await fetch('http://localhost:9000/member/requestLoan', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       id:id      })
-  //   })
-  //     .then(response => response.json())
-  //     .then(result => {
-  //       console.log('API Response: handleViewRequestsClickhandleViewRequestsClickhandleViewRequestsClickhandleViewRequestsClick', result.payload[0].result);
-  //       setViewRequests(result.payload[0].result);
-  //       // Set the data received from the API to the state
-  //     })
-  //     .catch(error => {
-  //       console.error('API Error:', error);
-  //     });
+    // setViewRequests(memberDetails);
+   await fetch('http://localhost:9000/member/requestLoan', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id:id      })
+    })
+      .then(response => response.json())
+      .then(result => {
+        console.log('API Response: handleViewRequestsClickhandleViewRequestsClickhandleViewRequestsClickhandleViewRequestsClick', result.payload[0].result);
+        setViewRequests(result.payload[0].result);
+        // Set the data received from the API to the state
+      })
+      .catch(error => {
+        console.error('API Error:', error);
+      });
   };
 
 

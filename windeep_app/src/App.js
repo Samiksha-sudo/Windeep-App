@@ -4,6 +4,7 @@
   import ErrorBoundary from './components/errorboundary/ErrorBoundary'
   // import Invoice from './components/Invoice';
   const Login = lazy(() => import('./components/login/Login'))
+  const Logout = lazy(() => import('./components/logout/Logout'))
   const Home = lazy(() => import('./components/Home/home'));
   const Dashboard = lazy(()=>import('./components/DashboardFile/dashboard'))
   const Member = lazy(() => import('./components/member/Member'))
@@ -45,6 +46,8 @@
               
               <Route path="/admin/login" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.PUBLIC,USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><Login 
               USER={USER_TYPES.ADMIN_USER}/></AuthorizedElement>} />
+
+              <Route path="/logout" element={<Logout />} />
 
               <Route path="/home" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER]}><Home CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 

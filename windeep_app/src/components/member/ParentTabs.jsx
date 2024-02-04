@@ -177,8 +177,6 @@ export default function ParentTabs({CURRENT_USER,USER_TYPES}) {
             <Tab label="View Requests" {...a11yProps(4)} />
             <Tab label="Loan Form" {...a11yProps(5)} />
             <Tab label="Gurantor Form" {...a11yProps(6)} />
-            <Tab label="Finance Payment" {...a11yProps(7)} />
-            <Tab label="Bonus Distribution" {...a11yProps(8)} />
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
@@ -201,12 +199,6 @@ export default function ParentTabs({CURRENT_USER,USER_TYPES}) {
         </CustomTabPanel>
         <CustomTabPanel value={value} index={6}>
           <GuranteeForm/>
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={7}>
-          <SingleLoanCalculator/>
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={8}>
-          <SingleLoanCalculator/>
         </CustomTabPanel>
 
       </Box>

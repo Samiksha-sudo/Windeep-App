@@ -20,7 +20,7 @@ import {
   Autocomplete,
 } from "@mui/material";
 
-import {adminLoginHome} from "../../utils/database/data"
+// import {adminLoginHome} from "../../utils/database/data"
 
 export default function Member({CURRENT_USER,USER_TYPES}) {
   const navigate = useNavigate();
@@ -30,22 +30,22 @@ export default function Member({CURRENT_USER,USER_TYPES}) {
   useEffect(() => {
     // Make the API request when the component mounts
     
-    setData(adminLoginHome)
-    // fetch('http://localhost:9000/admin/login/home', {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // })
-    //   .then(response => response.json())
-    //   .then(result => {
-    //     console.log('API Response:', result.payload[0].result);
-    //     // Set the data received from the API to the state
-    //     setData(result.payload[0].result);
-    //   })
-    //   .catch(error => {
-    //     console.error('API Error:', error);
-    //   });
+    // setData(adminLoginHome)
+    fetch('http://localhost:9000/admin/login/home', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(result => {
+        console.log('API Response:', result.payload[0].result);
+        // Set the data received from the API to the state
+        setData(result.payload[0].result);
+      })
+      .catch(error => {
+        console.error('API Error:', error);
+      });
   }, [])
 
   console.log("CURRENT_USER",CURRENT_USER)

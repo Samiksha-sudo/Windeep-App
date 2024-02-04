@@ -20,27 +20,12 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 export default function Navbaar({CURRENT_USER,USER_TYPES}) {
 
-    const [login, setlogin] = useState(false)
-    const [state, setState] = useState({})
-    const [searchKey, setsearchKey] = useState('');
     console.log("USER_TYPES IN navbar",USER_TYPES);
 
-    const [showCalculatorModal, setShowCalculatorModal] = useState(false);
-    const [existingData, setExistingData] = useState(null); // Assuming the data you want to edit is stored here
-  
-    const handleCalculatorClick = () => {
-      setShowCalculatorModal(true);
-    };
-  
-    const handleCloseCalculatorModal = () => {
-      setShowCalculatorModal(false);
-    };
-  
-    // Function to handle editing data
-    const handleEditData = (dataToEdit) => {
-      setExistingData(dataToEdit);
-      setShowCalculatorModal(true);
-    };
+    let token = localStorage.getItem('_token')
+
+
+    console.log("token",localStorage.getItem('_token'))
 
     return (
         <div>
@@ -58,29 +43,31 @@ export default function Navbaar({CURRENT_USER,USER_TYPES}) {
                                 <li className="nav-item ">
                                 <AuthorizedElement CURRENT_USER={CURRENT_USER} allowedUserTypes={[USER_TYPES.ADMIN_USER]}><NavLink className="nav-link" activclassname="active_navbar" to="/">Home</NavLink></AuthorizedElement>
                                 </li>
-
-                                <li className="nav-item ml-3">
-                                <AuthorizedElement CURRENT_USER={CURRENT_USER} allowedUserTypes={[USER_TYPES.ADMIN_USER]}><NavLink className="nav-link" activclassname="active_navbar" to="/member">Member</NavLink></AuthorizedElement>
-                                </li>
-                                <li className="nav-item ml-3">
-                                <AuthorizedElement  CURRENT_USER={CURRENT_USER} allowedUserTypes={[USER_TYPES.ADMIN_USER]}><NavLink className="nav-link" activclassname="active_navbar" to="/add">Add</NavLink></AuthorizedElement>
-                                </li>
+                                {token !==null? 
+                                <>
+                                    <li className="nav-item ml-3">
+                                    <AuthorizedElement CURRENT_USER={CURRENT_USER} allowedUserTypes={[USER_TYPES.ADMIN_USER]}><NavLink className="nav-link" activclassname="active_navbar" to="/member">Member</NavLink></AuthorizedElement>
+                                    </li>
+                                    <li className="nav-item ml-3">
+                                    <AuthorizedElement  CURRENT_USER={CURRENT_USER} allowedUserTypes={[USER_TYPES.ADMIN_USER]}><NavLink className="nav-link" activclassname="active_navbar" to="/add">Add</NavLink></AuthorizedElement>
+                                    </li>
+                                    </>
+                                :""}
                                
                             </ul>
                         </div>
 
                        
+                        {token ==null?
                         
-                        {USER_TYPES.PUBLIC &&
                             <NavDropdown title={<MdAccountBox style={{ backgroundColor: 'white', color: 'black', width: '30px', height: '27px' }} />} id="navbarScrollingDropdown" style={{ marginLeft: '1vw', width: '50px', height: '40px', backgroundColor: "white", borderRadius: '5px' }}>
                                 <NavDropdown.Item ><Link to="/member/login" style={{ color: "black", textDecoration: "none" }} ><MdAccountCircle /> Member Login</Link></NavDropdown.Item>
                                 <NavDropdown.Item ><Link to="/admin/login" style={{ color: "black", textDecoration: "none" }} ><MdAccountCircle />&nbsp;&nbsp; Admin Login</Link></NavDropdown.Item>
                             </NavDropdown>
-                        }
-                        {USER_TYPES.NORMAL || USER_TYPES.ADMIN_USER  &&
-                            <NavDropdown title={<MdAccountBox style={{ backgroundColor: 'white', color: 'black', width: '30px', height: '27px' }} />} id="navbarScrollingDropdown" style={{ marginLeft: '1vw', width: '50px', height: '40px', backgroundColor: "white", borderRadius: '5px' }}>
-                                <NavDropdown.Item ><Link to="/" style={{ color: "black", textDecoration: "none" }} ><BiLogOut /> Sign Out</Link></NavDropdown.Item>
-                            </NavDropdown>
+                        :
+                        <NavDropdown title={<MdAccountBox style={{ backgroundColor: 'white', color: 'black', width: '30px', height: '27px' }} />} id="navbarScrollingDropdown" style={{ marginLeft: '1vw', width: '50px', height: '40px', backgroundColor: "white", borderRadius: '5px' }}>
+                        <NavDropdown.Item ><Link to="/logout" style={{ color: "black", textDecoration: "none" }} ><MdAccountCircle /> Logout</Link></NavDropdown.Item>
+                    </NavDropdown>
                         }
 
                     </div>

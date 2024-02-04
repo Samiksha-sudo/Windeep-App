@@ -19,8 +19,10 @@ adminLoginRouter.post("/", async (req, res) => {
         
         let loginSuccess = false;
 
+
         result1.forEach(ele => {
             hashbcrypt = bcrypt.compareSync(req.body.password, ele.password);
+            console.log("hashbcrypt0",hashbcrypt)
             if (hashbcrypt) {
                 ele.isAdmin = true;
                 console.log(ele)
@@ -32,7 +34,7 @@ adminLoginRouter.post("/", async (req, res) => {
         });
         
         // Send response outside the loop
-        if (!loginSuccess && result1.length < 0) {
+        if (!loginSuccess || result1.length < 0) {
             res.status(401).json({ payload: [{ admin_id: null }], message: "", error: "Invalid email or password" });
         }
     } catch (error) {   

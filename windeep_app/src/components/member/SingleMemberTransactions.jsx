@@ -13,7 +13,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import {singleLoanDetails} from "../../utils/database/data"
+// import {singleLoanDetails} from "../../utils/database/data"
 export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -152,61 +152,61 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
         console.log('Checkbox value:', formData);
         formData.loan_id = loan_id;
 
-        setFormData({
-          Fee:'',
-          onlyInterest:'',
-          remarks:'',
-          adminRemarks:'',
-          adminRemarksCheckbox: false,
+        // setFormData({
+        //   Fee:'',
+        //   onlyInterest:'',
+        //   remarks:'',
+        //   adminRemarks:'',
+        //   adminRemarksCheckbox: false,
+        // });
+      
+        await fetch('http://localhost:9000/member/loan/addSingleLoan', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        })
+        .then(response => response.json())
+        .then(result => {
+          console.log('API Response', result.payload[0].result);
+          // Clear the form data
+          setFormData({
+            Fee:'',
+            onlyInterest:'',
+            remarks:'',
+            adminRemarks:'',
+            adminRemarksCheckbox: false,
+          });
+        })
+        .catch(error => {
+          console.error('API Error:', error);
         });
-      
-        // await fetch('http://localhost:9000/member/loan/addSingleLoan', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify(formData),
-        // })
-        // .then(response => response.json())
-        // .then(result => {
-        //   console.log('API Response', result.payload[0].result);
-        //   // Clear the form data
-        //   setFormData({
-        //     Fee:'',
-        //     onlyInterest:'',
-        //     remarks:'',
-        //     adminRemarks:'',
-        //     adminRemarksCheckbox: false,
-        //   });
-        // })
-        // .catch(error => {
-        //   console.error('API Error:', error);
-        // });
 
-        setLoanTransactionDetails(singleLoanDetails);
+        // setLoanTransactionDetails(singleLoanDetails);
       
-        // await fetch('http://localhost:9000/member/loan/singleLoanDetails', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify({
-        //     id: loan_id, 
-        //   }),
-        // })
-        // .then(response => response.json())
-        // .then(result => {
-        //   console.log('API Response:=================================', result.payload[0].result);
+        await fetch('http://localhost:9000/member/loan/singleLoanDetails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: loan_id, 
+          }),
+        })
+        .then(response => response.json())
+        .then(result => {
+          console.log('API Response:=================================', result.payload[0].result);
 
-        //   if( result.payload[0].result.length == 0){
-        //     navigate(`/member/${id}/loan`);
-        //   }
-        //   // Set the data received from the API to the state
-        //   setLoanTransactionDetails(result.payload[0].result);
-        // })
-        // .catch(error => {
-        //   console.error('API Error:', error);
-        // });
+          if( result.payload[0].result.length == 0){
+            navigate(`/member/${id}/loan`);
+          }
+          // Set the data received from the API to the state
+          setLoanTransactionDetails(result.payload[0].result);
+        })
+        .catch(error => {
+          console.error('API Error:', error);
+        });
       
         setIsGridOpen(!isGridOpen);
       };
@@ -216,50 +216,50 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
 
       useEffect(() => {
         // Make the API request when the component mounts
-        setDataLoan(singleLoanDetails);
-        // fetch('http://localhost:9000/member/loan/singleLoan', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify({
-        //     id: loan_id, 
-        //   }),
-        // })
-        //   .then(response => response.json())
-        //   .then(result => {
-        //     console.log('API Response sinfle loan detiails', result.payload[0].result);
-        //     // Set the data received from the API to the state
-        //     setDataLoan(result.payload[0].result[0]);
-        //   })
-        //   .catch(error => {
-        //     console.error('API Error:', error);
-        //   });
+        // setDataLoan(singleLoanDetails);
+        fetch('http://localhost:9000/member/loan/singleLoan', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: loan_id, 
+          }),
+        })
+          .then(response => response.json())
+          .then(result => {
+            console.log('API Response sinfle loan detiails', result.payload[0].result);
+            // Set the data received from the API to the state
+            setDataLoan(result.payload[0].result[0]);
+          })
+          .catch(error => {
+            console.error('API Error:', error);
+          });
 
 
-          setLoanTransactionDetails(singleLoanDetails);
+          // setLoanTransactionDetails(singleLoanDetails);
 
-          // fetch('http://localhost:9000/member/loan/singleLoanDetails', {
-          //   method: 'POST',
-          //   headers: {
-          //     'Content-Type': 'application/json',
-          //   },
-          //   body: JSON.stringify({
-          //     id: loan_id, 
-          //   }),
-          // })
-          //   .then(response => response.json())
-          //   .then(result => {
-          //     console.log('API Response:=================================', result.payload[0].result);
-          //     // Set the data received from the API to the state
-          //     if( result.payload[0].result.length == 0){
-          //       navigate(`/member/${id}/loan`);
-          //     }
-          //     setLoanTransactionDetails(result.payload[0].result);
-          //   })
-          //   .catch(error => {
-          //     console.error('API Error:', error);
-          //   });
+          fetch('http://localhost:9000/member/loan/singleLoanDetails', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: loan_id, 
+            }),
+          })
+            .then(response => response.json())
+            .then(result => {
+              console.log('API Response:=================================', result.payload[0].result);
+              // Set the data received from the API to the state
+              if( result.payload[0].result.length == 0){
+                navigate(`/member/${id}/loan`);
+              }
+              setLoanTransactionDetails(result.payload[0].result);
+            })
+            .catch(error => {
+              console.error('API Error:', error);
+            });
       }, [id]);
 
       const generateActionButtons = (row) => (
@@ -275,43 +275,43 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
 
       const handleDelete = async(row)=>{
         console.log("--------------------------------------------------- rows",row);
-        // await fetch('http://localhost:9000/member/loan/deleteTransactionDetails', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify({id:row.id, loan_id: loan_id}),
-        // })
-        // .then(response => response.json())
-        // .then(result => {
-        //   console.log('API Response', result.payload[0].result);
-        // })
-        // .catch(error => {
-        //   console.error('API Error:', error);
-        // });
+        await fetch('http://localhost:9000/member/loan/deleteTransactionDetails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({id:row.id, loan_id: loan_id}),
+        })
+        .then(response => response.json())
+        .then(result => {
+          console.log('API Response', result.payload[0].result);
+        })
+        .catch(error => {
+          console.error('API Error:', error);
+        });
       
-        // await fetch('http://localhost:9000/member/loan/singleLoanDetails', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify({
-        //     id: loan_id, 
-        //   }),
-        // })
-        // .then(response => response.json())
-        // .then(result => {
-        //   console.log('API Response:=================================', result.payload[0].result);
-        //   // Set the data received from the API to the state
-        //   if( result.payload[0].result.length == 0){
-        //     navigate(`/member/${id}/loan`);
-        //   }
-        //   setLoanTransactionDetails(result.payload[0].result);
-        // })
-        // .catch(error => {
-        //   console.error('API Error:', error);
-        // });
-        setLoanTransactionDetails(singleLoanDetails);
+        await fetch('http://localhost:9000/member/loan/singleLoanDetails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: loan_id, 
+          }),
+        })
+        .then(response => response.json())
+        .then(result => {
+          console.log('API Response:=================================', result.payload[0].result);
+          // Set the data received from the API to the state
+          if( result.payload[0].result.length == 0){
+            navigate(`/member/${id}/loan`);
+          }
+          setLoanTransactionDetails(result.payload[0].result);
+        })
+        .catch(error => {
+          console.error('API Error:', error);
+        });
+        // setLoanTransactionDetails(singleLoanDetails);
       }
 
       const handleEdit = async(row)=>{
@@ -344,60 +344,60 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
       const handleEditshare = async()=>{
 
         formData.loan_id = loan_id
-        // await fetch('http://localhost:9000/member/loan/editSingleLoan', {
-        //   method: 'POST', 
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify(formData),
-        // })
-        //   .then(response => response.json())
-        //   .then(result => {
-        //     console.log('API Response', result.payload[0].result);
-        //     // Set the data received from the API to the state
-        //     setData(result.payload[0].result[0]);
-        //   })
-        //   .catch(error => {
-        //     console.error('API Error:', error);
-        //   });
+        await fetch('http://localhost:9000/member/loan/editSingleLoan', {
+          method: 'POST', 
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        })
+          .then(response => response.json())
+          .then(result => {
+            console.log('API Response', result.payload[0].result);
+            // Set the data received from the API to the state
+            setData(result.payload[0].result[0]);
+          })
+          .catch(error => {
+            console.error('API Error:', error);
+          });
 
-          // await fetch('http://localhost:9000/member/loan/singleLoanDetails', {
-          //   method: 'POST',
-          //   headers: {
-          //     'Content-Type': 'application/json',
-          //   },
-          //   body: JSON.stringify({
-          //     id: loan_id, 
-          //   }),
-          // })
-          //   .then(response => response.json())
-          //   .then(result => {
-          //     console.log('API Response:=================================', result.payload[0].result);
-          //     // Set the data received from the API to the state
-          //     if( result.payload[0].result.length == 0){
-          //       navigate(`/member/${id}/loan`);
-          //     }
-          //     setLoanTransactionDetails(result.payload[0].result);
-          //     setFormData({
-          //       Fee:'',
-          //       onlyInterest:'',
-          //       remarks:'',
-          //       adminRemarks:'',
-          //       adminRemarksCheckbox: false,
-          //     });
-          //   })
-          //   .catch(error => {
-          //     console.error('API Error:', error);
-          //   });
-
-            setLoanTransactionDetails(singleLoanDetails);
-            setFormData({
-              Fee:'',
-              onlyInterest:'',
-              remarks:'',
-              adminRemarks:'',
-              adminRemarksCheckbox: false,
+          await fetch('http://localhost:9000/member/loan/singleLoanDetails', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id: loan_id, 
+            }),
+          })
+            .then(response => response.json())
+            .then(result => {
+              console.log('API Response:=================================', result.payload[0].result);
+              // Set the data received from the API to the state
+              if( result.payload[0].result.length == 0){
+                navigate(`/member/${id}/loan`);
+              }
+              setLoanTransactionDetails(result.payload[0].result);
+              setFormData({
+                Fee:'',
+                onlyInterest:'',
+                remarks:'',
+                adminRemarks:'',
+                adminRemarksCheckbox: false,
+              });
+            })
+            .catch(error => {
+              console.error('API Error:', error);
             });
+
+            // setLoanTransactionDetails(singleLoanDetails);
+            // setFormData({
+            //   Fee:'',
+            //   onlyInterest:'',
+            //   remarks:'',
+            //   adminRemarks:'',
+            //   adminRemarksCheckbox: false,
+            // });
 
             setIsGridOpen(false);
             setEditMode(false);

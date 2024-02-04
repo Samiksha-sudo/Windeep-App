@@ -50,10 +50,11 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
 
     const handleLoginClick = async () => {
         try {
-            console.log("in login",registerCredentials)
+            console.log("in login",registerCredentials,USER)
            
                 if (USER === "Admin User") {
                     if (registerCredentials.email !== '' && registerCredentials.password !== '') {
+                        console.log("aaa")
                         AdminLogin({
                             email: registerCredentials.email,
                             password: registerCredentials.password,
@@ -74,7 +75,13 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
                             })
                         })
 
-                    }
+                    }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Email or Password does not match!',
+                    })
+                }
                 }
                 else{
                     if (registerCredentials.memberId !== '' && registerCredentials.password !== '') {
@@ -87,6 +94,12 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
                                 let decode = jwtDecode(res.data.payload[0].token)
                                 console.log("datatattatat",decode)
                                 navigate("/")
+                        })
+                    }else{
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Email or Password does not match!',
                         })
                     }
                 }
