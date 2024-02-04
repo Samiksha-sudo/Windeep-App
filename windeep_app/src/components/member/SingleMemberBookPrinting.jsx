@@ -29,7 +29,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import {shares} from "../../utils/database/data"
+import { shares } from "../../utils/database/data"
 export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
   const navigate = useNavigate();
   console.log("CURRENT_USER", CURRENT_USER);
@@ -94,7 +94,7 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     //     console.error("API Error:", error);
     //   });
 
-      setData(shares);
+    setData(shares);
   }, [id]);
 
   const handleEdit = (row) => {
@@ -154,17 +154,17 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     //   .catch((error) => {
     //     console.error("Error inserting data:", error);
     //   });
-      setFormData({
-        id: "",
-        date: "",
-        member_id: "",
-        share_id: "",
-        monthly_contribution: "",
-        total_contribution: "",
-        bonus: "",
-        remarks: "",
-        admin_remarks: "",
-      });
+    setFormData({
+      id: "",
+      date: "",
+      member_id: "",
+      share_id: "",
+      monthly_contribution: "",
+      total_contribution: "",
+      bonus: "",
+      remarks: "",
+      admin_remarks: "",
+    });
     // await fetch("http://localhost:9000/member/shares", {
     //   method: "POST",
     //   headers: {
@@ -229,17 +229,17 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     //     console.error("Error inserting data:", error);
     //   });
 
-      setFormData({
-        id: "",
-        date: "",
-        member_id: "",
-        share_id: "",
-        monthly_contribution: "",
-        total_contribution: "",
-        bonus: "",
-        remarks: "",
-        admin_remarks: "",
-      });
+    setFormData({
+      id: "",
+      date: "",
+      member_id: "",
+      share_id: "",
+      monthly_contribution: "",
+      total_contribution: "",
+      bonus: "",
+      remarks: "",
+      admin_remarks: "",
+    });
 
     // await fetch("http://localhost:9000/member/shares", {
     //   method: "POST",
@@ -331,17 +331,17 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     //     console.error("Error inserting data:", error);
     //   });
 
-      setFormData({
-        id: "",
-        date: "",
-        member_id: "",
-        share_id: "",
-        monthly_contribution: "",
-        total_contribution: "",
-        bonus: "",
-        remarks: "",
-        admin_remarks: "",
-      });
+    setFormData({
+      id: "",
+      date: "",
+      member_id: "",
+      share_id: "",
+      monthly_contribution: "",
+      total_contribution: "",
+      bonus: "",
+      remarks: "",
+      admin_remarks: "",
+    });
 
     // await fetch("http://localhost:9000/member/shares", {
     //   method: "POST",
@@ -361,7 +361,7 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     //   .catch((error) => {
     //     console.error("API Error:", error);
     //   });
-      setData(shares);
+    setData(shares);
     setIsGridOpen(false);
     setTotalShares(totalshares());
   };
@@ -431,17 +431,27 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     //     console.error("API Error:", error);
     //   });
 
-      setFormData({
-        id: "",
-        date: "",
-        member_id: "",
-        monthly_contribution:
-          result.payload[0].result[0].monthly_contribution,
-        total_contribution: result.payload[0].result[0].totalContribution,
-        bonus: "",
-        remarks: "",
-        admin_remarks: "",
-      });
+    // setFormData({
+    //   id: "",
+    //   date: "",
+    //   member_id: "",
+    //   monthly_contribution:
+    //     result.payload[0].result[0].monthly_contribution,
+    //   total_contribution: result.payload[0].result[0].totalContribution,
+    //   bonus: "",
+    //   remarks: "",
+    //   admin_remarks: "",
+    // }); 
+     setFormData({
+      id: "",
+      date: "",
+      member_id: "",
+      monthly_contribution:"",
+      total_contribution: "",
+      bonus: "",
+      remarks: "",
+      admin_remarks: "",
+    });
   };
   useEffect(() => {
     // Set initial values from the first record in the data array

@@ -9,7 +9,7 @@ import { useParams,useLocation } from 'react-router-dom';
 import image1 from "../../assets/images/photoImage.jpg";
 import { useNavigate } from "react-router-dom";
 import { TextField, FormControl, InputAdornment, Container, IconButton, Alert, FormHelperText } from "@mui/material";
-import {memberDetails} from "../../utils/database"
+import {memberDetails} from "../../utils/database/data"
 
 export default function LoanRequestForm({CURRENT_USER,USER_TYPES}) {
 
