@@ -22,11 +22,9 @@
   const GuranteeForm = lazy(()=>import('./components/member/GuranteeForm'))
   const GuranteeRequests = lazy(()=>import('./components/member/GuranteeRequests'))
   const ParentTabs = lazy(()=>import('./components/member/ParentTabs'));
-
-
-
-  
   const Add = lazy(() => import('./components/add/Add'))
+
+
   const USER_TYPES = {
     PUBLIC:"Public User",
     NORMAL:"Normal User",
@@ -36,7 +34,7 @@
 
   function App() {
     return (
-      <div>
+      <div className="app">
         <Router>
           <ErrorBoundary>
             <Suspense fallback={
@@ -47,51 +45,53 @@
                 
                 }> 
               <Navbaar  /> 
-              <Routes>
-              <Route path="/member/login" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.PUBLIC,USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><Login USER={USER_TYPES.NORMAL} /></AuthorizedElement>} />
-              
-              <Route path="/admin/login" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.PUBLIC,USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><Login 
-              USER={USER_TYPES.ADMIN_USER}/></AuthorizedElement>} />
+              <div className='content'>
+                <Routes>
+                <Route path="/member/login" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.PUBLIC,USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><Login USER={USER_TYPES.NORMAL} /></AuthorizedElement>} />
+                
+                <Route path="/admin/login" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.PUBLIC,USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><Login 
+                USER={USER_TYPES.ADMIN_USER}/></AuthorizedElement>} />
 
-              <Route path="/logout" element={<Logout />} />
+                <Route path="/logout" element={<Logout />} />
 
-              <Route path="/home" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER]}><Home CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                <Route path="/home" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER]}><Home CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 
-              <Route path="/" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL,USER_TYPES.PUBLIC]}><Dashboard  CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}  /></AuthorizedElement>} />
+                <Route path="/" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL,USER_TYPES.PUBLIC]}><Dashboard  CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}  /></AuthorizedElement>} />
 
-              <Route path='/member' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER]}>
-                <Member CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES} AuthorizedElement={AuthorizedElement}/></AuthorizedElement>} />
+                <Route path='/member' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER]}>
+                  <Member CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES} AuthorizedElement={AuthorizedElement}/></AuthorizedElement>} />
 
-              <Route path='/member/:id/shares' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><SingleMemberBookPrinting  CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                <Route path='/member/:id/shares' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><SingleMemberBookPrinting  CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 
-              <Route path='/member/:id/transactions/:loan_id' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><SingleMemberTransactions  CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                <Route path='/member/:id/transactions/:loan_id' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><SingleMemberTransactions  CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 
-              <Route path='/member/:id/loan' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><SingleMemberLoan CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                <Route path='/member/:id/loan' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><SingleMemberLoan CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 
-              <Route path='/member/:id/loanCalculator' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><SingleLoanCalculator CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                <Route path='/member/:id/loanCalculator' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><SingleLoanCalculator CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 
-              <Route path='/member/:id/loanRequest' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><LoanRequestForm CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                <Route path='/member/:id/loanRequest' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><LoanRequestForm CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 
-              <Route path='/member/:id/loanForm' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><LoanForm CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                <Route path='/member/:id/loanForm' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><LoanForm CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 
-              <Route path='/member/:id/loanform1' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><MemberForm1 CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                <Route path='/member/:id/loanform1' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><MemberForm1 CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 
-              <Route path='/member/:id/loanform2' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><MemberForm2 CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                <Route path='/member/:id/loanform2' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><MemberForm2 CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 
-              <Route path='/member/:id/loanform3' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><MemberForm3 CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                <Route path='/member/:id/loanform3' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><MemberForm3 CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 
-              <Route path='/member/:id/gurantorForm' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><GuranteeForm CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                <Route path='/member/:id/gurantorForm' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><GuranteeForm CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 
-              <Route path='/member/:id/viewRequests' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><GuranteeRequests CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
-              
-              <Route path='/member/:id/pages' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><ParentTabs  CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
-              
-              <Route path='/add' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER]}><Add CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                <Route path='/member/:id/viewRequests' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><GuranteeRequests CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                
+                <Route path='/member/:id/pages' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><ParentTabs  CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                
+                <Route path='/add' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER]}><Add CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 
 
-              <Route path="*" element={<img width="100%" height="750px" src="https://miro.medium.com/max/1400/1*zBFBJktPD3_z0S_35kO5Hg.gif" alt="not found" />} />
+                <Route path="*" element={<img width="100%" height="750px" src="https://miro.medium.com/max/1400/1*zBFBJktPD3_z0S_35kO5Hg.gif" alt="not found" />} />
 
-              </Routes>  
+                </Routes>  
+              </div>
               <Footer />   
             </Suspense>
           </ErrorBoundary>

@@ -21,7 +21,7 @@ export default function Navbaar() {
   
     return (
       <div>
-        <div>
+        <div className="header">
           <nav className="navbar navbar-expand-lg navbar-dark " style={{ background: '#000000' }}>
             <div className="container-fluid">
               <Link className="navbar-brand font-weight-bold" to="/" style={{ fontSize: "1.6rem" }}>
