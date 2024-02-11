@@ -5,7 +5,8 @@ import { MdAccountBox, MdAccountCircle } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
 import Badge from '@mui/material/Badge';
 import { styled } from '@mui/material/styles';
-import { getStoreState } from '../../store/shared';
+import { getStoreState, setStoreState } from '../../store/shared';
+import { useSelector } from 'react-redux';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -19,7 +20,13 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 export default function Navbaar() {
     let token = localStorage.getItem('_token');
     console.log("token", localStorage.getItem('_token'));
-    const UserToken = getStoreState("loggedInUserReducer");
+    // const UserToken = getStoreState("loggedInUserReducer");
+    const UserToken = useSelector((state) => state.loggedInUserReducer);
+    const logout = () => {
+      setStoreState("USER_LOGOUT",{})
+      localStorage.removeItem('_token');
+    }
+
     return (
       <div>
         <div className="header">
@@ -63,8 +70,8 @@ export default function Navbaar() {
                         </li>
                       </>
                       }
-                      <li className="nav-item ml-3">
-                        <NavLink className="nav-link" activclassname="active_navbar" to="/logout">
+                      <li className="nav-item ml-auto">
+                        <NavLink className="nav-link" activclassname="active_navbar" to="/" onClick={()=>logout()}>
                           Logout
                         </NavLink>
                       </li>
