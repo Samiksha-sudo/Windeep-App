@@ -5,6 +5,7 @@ import Swal from 'sweetalert2'
 import {jwtDecode} from 'jwt-decode';
 import './Login.css';
 import { AdminLogin,MemberLogin } from '../../config/LoginService'
+import { setStoreState } from '../../store/shared';
 export default function Login({USER}) { 
     console.log("user",USER);
     const navigate = useNavigate();
@@ -61,10 +62,11 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
                         })
                         .then(res=>{
                             console.log("datatattatat------------------->",res)
-                                localStorage.setItem("_token", res.data.payload[0].token);
-                                let decode = jwtDecode(res.data.payload[0].token)
-                                console.log("decode",decode)
-                                navigate("/home")
+                            let decode = jwtDecode(res.data.payload[0].token)
+                            setStoreState("USER_LOGIN",decode)
+                            localStorage.setItem("_token", res.data.payload[0].token);
+                            console.log("decode",decode)
+                            navigate("/home")
                           
                         }). catch (error=> {
                             console.log("error in catch",error)
