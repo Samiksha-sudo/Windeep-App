@@ -210,18 +210,6 @@
       return (
           <>
 
-        <FormControl sx={{ m: 1, minWidth: 120 }}>
-        <Select
-          value={selectedLanguage}
-          onChange={handleLanguageChange}
-          displayEmpty
-          inputProps={{ 'aria-label': 'Select Language' }}
-        >
-          <MenuItem value="english">English</MenuItem>
-          <MenuItem value="marathi">Marathi</MenuItem>
-        </Select>
-      </FormControl>
-
         <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
             <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
               {steps.map((label) => (
