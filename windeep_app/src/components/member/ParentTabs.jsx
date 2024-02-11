@@ -32,7 +32,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import SingleMembershares from "./SingleMemberBookPrinting"
+import SingleMembershares from "./SingleMemberShares"
 import SingleMemberLoan from "./SingleMemberLoan";
 import SingleLoanCalculator from "./SingleLoanCalculator";
 import LoanRequestForm from "./LoanRequestForm";
@@ -130,7 +130,6 @@ export default function ParentTabs({CURRENT_USER,USER_TYPES}) {
 
   return (
     <>
-      <Navbaar CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES} /> 
       <div className="mt-3" style={{ display: "flex", justifyContent: "space-between" }}>
  
           <React.Fragment>
@@ -202,7 +201,6 @@ export default function ParentTabs({CURRENT_USER,USER_TYPES}) {
         </CustomTabPanel>
 
       </Box>
-      <Footer />
     </>
   );
 }

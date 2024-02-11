@@ -108,9 +108,15 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
             console.error('Error in admin login:', error);
         }
     }
-    
+    const handleKeyPress = (event) => {
+        if (event.key === "Enter") {
+          handleLoginClick();
+        }
+      };
     
     return (
+        <>
+      
         <div style={{backgroundColor:"white"}}>
     
 
@@ -138,6 +144,7 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
                                     name="memberId"
                                     value={registerCredentials.memberId}
                                     onChange={handler}
+                                    onKeyPress={handleKeyPress}
                                     placeholder='Member Id' />
                                     <br/>
                                     <br/>
@@ -147,6 +154,7 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
                                     name="password"
                                     value={registerCredentials.password}
                                     onChange={handler}
+                                    onKeyPress={handleKeyPress}
                                     placeholder='Password' />
                                     </>
                                     :                               
@@ -157,6 +165,7 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
                                         name="email"
                                         value={registerCredentials.email}
                                         onChange={handler}
+                                        onKeyPress={handleKeyPress}
                                         placeholder='Email'
                                     />
 
@@ -168,6 +177,7 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
                                     name="password"
                                     value={registerCredentials.password}
                                     onChange={handler}
+                                    onKeyPress={handleKeyPress}
                                     placeholder='Password' />
 
                                 </>
@@ -189,6 +199,7 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
             </div>
 
         </div>
-        
+       
+    </>
     )
 }

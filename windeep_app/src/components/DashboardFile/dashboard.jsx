@@ -61,7 +61,6 @@ export default function Dashboard({CURRENT_USER,USER_TYPES}) {
     return (
         <>
 
-            <Navbaar CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/> 
 
            <img src={image1} style={{margin: "2%", marginLeft: "42%"}}/>
 
@@ -81,7 +80,6 @@ However, the woman’s enthusiasm makes her see only the positive after each cha
 
 </p>
 
-            <Footer />
         </>
     )
 } 

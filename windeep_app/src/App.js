@@ -1,6 +1,8 @@
   import './App.css';
   import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; 
   import { Children, lazy, Suspense } from 'react';
+  import Footer from "./components/Footer/Footer";
+  import Navbaar from "./components/Navbaar/Navbaar";
   import ErrorBoundary from './components/errorboundary/ErrorBoundary'
   // import Invoice from './components/Invoice';
   const Login = lazy(() => import('./components/login/Login'))
@@ -8,7 +10,7 @@
   const Home = lazy(() => import('./components/Home/home'));
   const Dashboard = lazy(()=>import('./components/DashboardFile/dashboard'))
   const Member = lazy(() => import('./components/member/Member'))
-  const SingleMemberBookPrinting = lazy(() => import('./components/member/SingleMemberBookPrinting'))
+  const SingleMemberBookPrinting = lazy(() => import('./components/member/SingleMemberShares'))
   const SingleMemberTransactions = lazy(() => import('./components/member/SingleMemberTransactions'))
   const SingleMemberLoan = lazy(() => import('./components/member/SingleMemberLoan'))
   const SingleLoanCalculator = lazy (()=>import('./components/member/SingleLoanCalculator'))
@@ -19,7 +21,10 @@
   const MemberForm3 = lazy (()=>import('./components/member/MemberForm3'))
   const GuranteeForm = lazy(()=>import('./components/member/GuranteeForm'))
   const GuranteeRequests = lazy(()=>import('./components/member/GuranteeRequests'))
-  const ParentTabs = lazy(()=>import('./components/member/ParentTabs'))
+  const ParentTabs = lazy(()=>import('./components/member/ParentTabs'));
+
+
+
   
   const Add = lazy(() => import('./components/add/Add'))
   const USER_TYPES = {
@@ -41,6 +46,7 @@
                 </div>
                 
                 }> 
+              <Navbaar  /> 
               <Routes>
               <Route path="/member/login" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.PUBLIC,USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><Login USER={USER_TYPES.NORMAL} /></AuthorizedElement>} />
               
@@ -85,7 +91,8 @@
 
               <Route path="*" element={<img width="100%" height="750px" src="https://miro.medium.com/max/1400/1*zBFBJktPD3_z0S_35kO5Hg.gif" alt="not found" />} />
 
-              </Routes>     
+              </Routes>  
+              <Footer />   
             </Suspense>
           </ErrorBoundary>
         </Router>

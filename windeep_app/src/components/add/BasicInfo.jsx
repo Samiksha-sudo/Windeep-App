@@ -10,8 +10,10 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import Swal from 'sweetalert2'
+import {jwtDecode} from 'jwt-decode';   
 
-
+import {MemberRegister } from '../../config/LoginService'
 
 import { TextField, FormControl, Button, InputAdornment, Container, IconButton, Alert } from "@mui/material";
 const mystyles = {
@@ -26,8 +28,13 @@ const mystyleDate = {
       }
 }
 const regForEmail = RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
-const regForName = RegExp(/^[A-Za-z]{3,30}$/);
+const regForName = /^[A-Za-z ]+$/;
 const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})");
+const regForAadharCard = RegExp(/^[0-9]{12}$/);
+const regForPanCard = RegExp(/^[A-Z]{5}[0-9]{4}[A-Z]$/);
+const regForMobile = RegExp(/^[0-9]{10}$/);
+const regForAccountNumber = RegExp(/^\d{14}$/)
+const regForIFSCCode = RegExp(/^[A-Z]{4}0[A-Z0-9]{6}$/)
 
 export default function BasicInfo() {
     const [errors, setErrors] = useState({
@@ -39,6 +46,9 @@ export default function BasicInfo() {
         errPassword: "",
         errConfirm_password: "",
         submit_error: "",
+        erraccountNumber:"",
+        errifsc:"",
+        errbankAddress:""
     });
     const [registerCredentials, setRegisterCredentials] = useState({
         fullName: "",
@@ -49,6 +59,9 @@ export default function BasicInfo() {
         password: "",
         cpassword: "",
         profile: "",
+        accountNumber:"",
+        ifsc:"",
+        bankAddress:""
     });
     const [show, setShow] = useState({
         showPassword: false,
@@ -68,7 +81,7 @@ export default function BasicInfo() {
                 break;
 
             case "mobile":
-                error = regForName.test(value) ? "" : "Invalid Mobile";
+                error = regForMobile.test(value) ? "" : "Invalid Mobile Number";
                 setErrors({ ...errors, errMobile: error });
                 break;
 
@@ -78,13 +91,23 @@ export default function BasicInfo() {
                 break;
 
             case "aadharCard":
-                error = regForEmail.test(value) ? "" : "Invalid Aadhar Card";
+                error = regForAadharCard.test(value) ? "" : "Invalid Aadhar Card";
                 setErrors({ ...errors, errAadharCard: error });
                 break;
-
+    
             case "panCard":
-                error = regForEmail.test(value) ? "" : "Invalid PanCard";
+                error = regForPanCard.test(value) ? "" : "Invalid Pan Card";
                 setErrors({ ...errors, errPanCard: error });
+                break;
+
+            case "accountNumber":
+                error = regForAccountNumber.test(value) ? "" : "Invalid Account Number";
+                setErrors({ ...errors, erraccountNumber: error });
+                break;
+
+            case "ifsc":
+                error = regForIFSCCode.test(value) ? "" : "Invalid IFSC Code";
+                setErrors({ ...errors, errifsc: error });
                 break;
 
             case "password":
@@ -104,7 +127,7 @@ export default function BasicInfo() {
 
     // New User Registration
     const validateRegister = async () => {
-        if (registerCredentials.fullName !== ""  && registerCredentials.mobile !== "" && registerCredentials.email !== "" && registerCredentials.password !== "" && registerCredentials.confirm_password !== "" && registerCredentials.profile !== "" && registerCredentials.aadharCard !== "" && registerCredentials.panCard !== ""
+        if (registerCredentials.fullName !== ""  && registerCredentials.mobile !== "" && registerCredentials.email !== "" && registerCredentials.password !== "" && registerCredentials.cpassword !== "" && registerCredentials.profile !== "" && registerCredentials.aadharCard !== "" && registerCredentials.panCard !== "" && registerCredentials.accountNumber!=="" && registerCredentials.ifsc !== ""
         ) {
             const formData = new FormData();
             formData.append("fullName", registerCredentials.fullName);
@@ -114,8 +137,31 @@ export default function BasicInfo() {
             formData.append("email", registerCredentials.email);
             formData.append("profile", registerCredentials.profile);
             formData.append("password", registerCredentials.password);
+            formData.append("cpassword", registerCredentials.cpassword);
+            formData.append("accountNumber", registerCredentials.accountNumber);
+            formData.append("ifsc", registerCredentials.ifsc);
+            formData.append("bankAddress", registerCredentials.bankAddress);
+            
 
-           
+           console.log("registeration details",registerCredentials);
+
+        await MemberRegister(registerCredentials)
+        .then(res=>{
+            console.log("datatattatat------------------->",res)
+                localStorage.setItem("_token", res.data.token);
+                let decode = jwtDecode(res.data.token)
+                console.log("decode",decode)
+                navigate("/")
+          
+        }). catch (error=> {
+            console.log("error in catch",error)
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong',
+            })
+        })
+
         }
 
         else {
@@ -239,7 +285,67 @@ export default function BasicInfo() {
                         />
                     </FormControl>
 
-                    <FormControl fullWidth>
+                    <FormControl sx={{ my: 2 }} fullWidth>
+                        <TextField
+                            helperText={errors.erraccountNumber}
+                            sx={mystyles}
+                            name="accountNumber"
+                            label="Account Number"
+                            size="small"
+                            onBlur={handler}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment >
+                                        <BorderColorTwoToneIcon color="info" />
+                                    </InputAdornment>
+                                ),
+                            }}
+                            variant="outlined"
+                            color="info"
+                        />
+                    </FormControl>
+
+                    <FormControl sx={{ my: 2 }} fullWidth>
+                        <TextField
+                            helperText={errors.errbankAddress}
+                            sx={mystyles}
+                            name="bankAddress"
+                            label="Bank Address"
+                            size="small"
+                            onBlur={handler}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment >
+                                        <BorderColorTwoToneIcon color="info" />
+                                    </InputAdornment>
+                                ),
+                            }}
+                            variant="outlined"
+                            color="info"
+                        />
+                    </FormControl>
+
+                    <FormControl sx={{ my: 2 }} fullWidth>
+                        <TextField
+                            helperText={errors.errifsc}
+                            sx={mystyles}
+                            name="ifsc"
+                            label="IFSC Code"
+                            size="small"
+                            onBlur={handler}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment >
+                                        <BorderColorTwoToneIcon color="info" />
+                                    </InputAdornment>
+                                ),
+                            }}
+                            variant="outlined"
+                            color="info"
+                        />
+                    </FormControl>
+
+                    <FormControl sx={{ my: 2 }} fullWidth>
                         <TextField
                             helperText={errors.errPassword}
                             sx={mystyles}

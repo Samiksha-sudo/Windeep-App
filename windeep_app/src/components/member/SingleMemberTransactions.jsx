@@ -430,7 +430,6 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
     return (
         <>
 
-<Navbaar CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/> 
             {['Profile'].map((anchor) => (
   <React.Fragment key={anchor}>
     <Button onClick={toggleDrawer(anchor, true)} sx = {{marginLeft: "1%"}}>
@@ -699,7 +698,6 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
 
 
       </Paper> 
-            <Footer />
         </>
     )
 } 

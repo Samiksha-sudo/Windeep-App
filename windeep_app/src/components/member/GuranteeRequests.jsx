@@ -100,7 +100,6 @@ export default function GuranteeRequests({CURRENT_USER,USER_TYPES}) {
     return (
         <>
 
-<Navbaar CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/> 
             
 
 
@@ -229,7 +228,6 @@ export default function GuranteeRequests({CURRENT_USER,USER_TYPES}) {
       </Grid>
     </Grid>
   
-            <Footer />
         </>
     )
 } 

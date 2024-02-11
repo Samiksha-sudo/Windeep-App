@@ -99,7 +99,6 @@ export default function Home({CURRENT_USER,USER_TYPES}) {
     return (
         <>
 
-<Navbaar CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/> 
             <br/>
         <br/>
         <br/>
@@ -130,7 +129,6 @@ export default function Home({CURRENT_USER,USER_TYPES}) {
                      <Line options={options} data={data} />;
                     <br/>
 
-            <Footer />
         </>
     )
 } 

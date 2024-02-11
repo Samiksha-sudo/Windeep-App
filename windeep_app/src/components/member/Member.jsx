@@ -166,7 +166,6 @@ export default function Member({CURRENT_USER,USER_TYPES}) {
 
   return (
     <>
-            <Navbaar CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES} /> 
       <Paper sx={{ width: "100%", padding: "1%" }}>
         <div className="cdb-form" style={{ width: "100%" }}>
           <input
@@ -265,7 +264,6 @@ export default function Member({CURRENT_USER,USER_TYPES}) {
         </table>
       </Paper>
 
-      <Footer />
     </>
   );
 }

@@ -9,3 +9,7 @@ export function MemberLogin(data){
     return axios.post(`${MAIN_URL}admin/login/member`,data) 
 }
 
+export function MemberRegister(data){
+    return axios.post(`${MAIN_URL}member/registerMember`,data) 
+}
+

@@ -14,8 +14,8 @@ import {
   List,
   ListItem,
   ListItemButton,
-  ListItemText,
-  Typography,
+  Stack ,
+  TablePagination  ,
   TextField,
   Grid,
 } from "@mui/material";
@@ -29,14 +29,11 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-// import {shares} from "../../utils/database/data"
+
 export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
   const navigate = useNavigate();
-  console.log("CURRENT_USER", CURRENT_USER);
   const location = useLocation();
   const { id } = useParams();
-
-  console.log(id);
 
   const columns = [
     { id: "date", label: "Date", minWidth: 170 },
@@ -57,10 +54,12 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
 
   const [showSubmitButton, setShowSubmitButton] = useState(true);
   const [showEditButton, setShowEditButton] = useState(false);
-
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
   const [formData, setFormData] = useState({
     id: "",
-    date: "",
+    date: new Date(), // Initialize date with current date
     member_id: "",
     share_id: "",
     monthly_contribution: "",
@@ -74,7 +73,9 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
   const [isGridOpen, setIsGridOpen] = useState(false); // New state variable
 
   useEffect(() => {
-    // Make the API request when the component mounts
+    const limit = rowsPerPage;
+    const offset = page * rowsPerPage;
+  
     fetch("http://localhost:9000/member/shares", {
       method: "POST",
       headers: {
@@ -82,25 +83,23 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
       },
       body: JSON.stringify({
         id: id,
+        limit: limit,
+        offset: offset
       }),
     })
       .then((response) => response.json())
       .then((result) => {
-        console.log("API Response:", result.payload[0].result);
         // Set the data received from the API to the state
         setData(result.payload[0].result);
+        setTotalCount(result.payload[0].count)
       })
       .catch((error) => {
         console.error("API Error:", error);
       });
-
-      // setData(shares);
-  }, [id]);
+  }, [id, page, rowsPerPage]);
+  
 
   const handleEdit = (row) => {
-    console.log("in edit data", row.member_id);
-    console.log("in edit", formData);
-
     setFormData({
       id: row.id,
       date: row.start_date,
@@ -119,10 +118,12 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
   };
 
   const handleEditShares = async () => {
-    console.log("in edit data", data[0].member_id);
-    console.log("in edit", formData);
+
     formData.member_id = data[0].member_id;
     formData.update_by = "Pradeep Khengare";
+
+    const limit = rowsPerPage;
+    const offset = page * rowsPerPage;
 
     await fetch("http://localhost:9000/member/shares/edit", {
       method: "POST",
@@ -133,12 +134,11 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Data inserted successfully:", data);
 
         // Optionally, you can reset the form fields after successful insertion
         setFormData({
           id: "",
-          date: "",
+          date: new Date(),
           member_id: "",
           share_id: "",
           monthly_contribution: "",
@@ -147,24 +147,13 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
           remarks: "",
           admin_remarks: "",
         });
-
-        // Reload the page after successful submission
-        // window.location.reload();
       })
       .catch((error) => {
         console.error("Error inserting data:", error);
       });
-      // setFormData({
-      //   id: "",
-      //   date: "",
-      //   member_id: "",
-      //   share_id: "",
-      //   monthly_contribution: "",
-      //   total_contribution: "",
-      //   bonus: "",
-      //   remarks: "",
-      //   admin_remarks: "",
-      // });
+
+      
+
     await fetch("http://localhost:9000/member/shares", {
       method: "POST",
       headers: {
@@ -172,28 +161,30 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
       },
       body: JSON.stringify({
         id: id,
+        limit: limit,
+        offset: offset
       }),
     })
       .then((response) => response.json())
       .then((result) => {
-        console.log("API Response:", result.payload[0].result);
         // Set the data received from the API to the state
         setData(result.payload[0].result);
+        setTotalCount(result.payload[0].count)
       })
       .catch((error) => {
         console.error("API Error:", error);
       });
-    // setData(shares);
 
     setIsGridOpen(false);
     setTotalShares(totalshares());
   };
 
   const handleDelete = async (row) => {
-    console.log("in edit data", data[0].member_id);
-    console.log("in edit", formData);
     formData.member_id = data[0].member_id;
     formData.update_by = "Pradeep Khengare";
+
+    const limit = rowsPerPage;
+    const offset = page * rowsPerPage;
 
     await fetch("http://localhost:9000/member/shares/delete", {
       method: "POST",
@@ -207,12 +198,11 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Data inserted successfully:", data);
 
         // Optionally, you can reset the form fields after successful insertion
         setFormData({
           id: "",
-          date: "",
+          date: new Date(),
           member_id: "",
           share_id: "",
           monthly_contribution: "",
@@ -221,25 +211,10 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
           remarks: "",
           admin_remarks: "",
         });
-
-        // Reload the page after successful submission
-        // window.location.reload();
       })
       .catch((error) => {
         console.error("Error inserting data:", error);
       });
-
-      // setFormData({
-      //   id: "",
-      //   date: "",
-      //   member_id: "",
-      //   share_id: "",
-      //   monthly_contribution: "",
-      //   total_contribution: "",
-      //   bonus: "",
-      //   remarks: "",
-      //   admin_remarks: "",
-      // });
 
     await fetch("http://localhost:9000/member/shares", {
       method: "POST",
@@ -248,18 +223,19 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
       },
       body: JSON.stringify({
         id: id,
+        limit: limit,
+        offset: offset
       }),
     })
       .then((response) => response.json())
       .then((result) => {
-        console.log("API Response:", result.payload[0].result);
         // Set the data received from the API to the state
         setData(result.payload[0].result);
+        setTotalCount(result.payload[0].count)
       })
       .catch((error) => {
         console.error("API Error:", error);
       });
-    // setData(shares);
 
     setIsGridOpen(false);
     setTotalShares(totalshares());
@@ -269,7 +245,6 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     let totalMonthlyContribution = 0;
     let totalBonus = 0;
 
-    console.log("data", data);
 
     // Check if data is available and not empty
     if (data && data.length > 0) {
@@ -279,13 +254,8 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
         totalBonus += parseInt(entry.bonus) || 0; // Parse or default to 0
       });
 
-      // Output the results
-      console.log("Total Monthly Contribution:", totalMonthlyContribution);
-      console.log("Total Bonus:", totalBonus);
-
       // Calculate and return the grand total
       const grandTotal = totalMonthlyContribution + totalBonus;
-      console.log("Grand Total:", grandTotal);
       return grandTotal;
     }
 
@@ -297,7 +267,8 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     formData.created_by = "Pradeep Khengare";
     formData.member_id = id;
 
-    console.log("--------------------->", formData);
+    const limit = rowsPerPage;
+    const offset = page * rowsPerPage;
 
     // Send the form data to the server
     await fetch("http://localhost:9000/member/shares/add", {
@@ -309,12 +280,11 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Data inserted successfully:", data);
 
         // Optionally, you can reset the form fields after successful insertion
         setFormData({
           id: "",
-          date: "",
+          date: new Date(),
           member_id: "",
           share_id: "",
           monthly_contribution: "",
@@ -323,25 +293,10 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
           remarks: "",
           admin_remarks: "",
         });
-
-        // Reload the page after successful submission
-        // window.location.reload();
       })
       .catch((error) => {
         console.error("Error inserting data:", error);
       });
-
-      // setFormData({
-      //   id: "",
-      //   date: "",
-      //   member_id: "",
-      //   share_id: "",
-      //   monthly_contribution: "",
-      //   total_contribution: "",
-      //   bonus: "",
-      //   remarks: "",
-      //   admin_remarks: "",
-      // });
 
     await fetch("http://localhost:9000/member/shares", {
       method: "POST",
@@ -350,18 +305,20 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
       },
       body: JSON.stringify({
         id: id,
+        limit: limit,
+        offset: offset
       }),
     })
       .then((response) => response.json())
       .then((result) => {
-        console.log("API Response:", result.payload[0].result);
         // Set the data received from the API to the state
         setData(result.payload[0].result);
+        setTotalCount(result.payload[0].count)
       })
       .catch((error) => {
         console.error("API Error:", error);
       });
-      // setData(shares);
+
     setIsGridOpen(false);
     setTotalShares(totalshares());
   };
@@ -377,8 +334,6 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     </>
   );
 
-
-
   const handleInputChange = (e) => {
     if (e && e.target) {
       // Handle changes from regular text fields
@@ -391,7 +346,7 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
       // Handle changes from date picker
       setFormData((prevData) => ({
         ...prevData,
-        date: e.format("MM-DD-YYYY"), // Adjust the format as needed
+        date: e, // Assuming the date picker provides the date object directly
       }));
     }
   };
@@ -411,13 +366,9 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     })
       .then((response) => response.json())
       .then((result) => {
-        console.log(
-          "API Response handleAddClickhandleAddClickhandleAddClickhandleAddClickhandleAddClick:",
-          result.payload[0].result
-        );
         setFormData({
           id: "",
-          date: "",
+          date: new Date(),
           member_id: "",
           monthly_contribution:
             result.payload[0].result[0].monthly_contribution,
@@ -430,26 +381,34 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
       .catch((error) => {
         console.error("API Error:", error);
       });
-
-      // setFormData({
-      //   id: "",
-      //   date: "",
-      //   member_id: "",
-      //   monthly_contribution:
-      //     result.payload[0].result[0].monthly_contribution,
-      //   total_contribution: result.payload[0].result[0].totalContribution,
-      //   bonus: "",
-      //   remarks: "",
-      //   admin_remarks: "",
-      // });
   };
+
   useEffect(() => {
-    // Set initial values from the first record in the data array
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:9000/member/shares/totalData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: id
+          }),
+        });
+        const result = await response.json();
+        console.log("API Response in totalData:", result.payload[0].result);
+      } catch (error) {
+        console.error("API Error:", error);
+      }
+    };
+  
     if (
       data.length > 0 &&
       data[0]?.member_details &&
       data[0].member_details.length > 0
     ) {
+      fetchData();
+  
       const firstRecord = data[0].member_details[0];
       console.log("firstRecord", firstRecord);
       setFormData({
@@ -466,12 +425,12 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
         admin_remarks: firstRecord.admin_remarks,
       });
     }
-
+  
     setTotalShares(totalshares());
-  }, [data]);
+  }, [id]);
+  
 
   const totalContributionData = (monthly_contribution, data) => {
-    console.log("data ----->", data);
     if (data.length === 0) {
       return monthly_contribution;
     }
@@ -488,12 +447,18 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     return (totalMonthlyContribution + monthly_contribution).toString();
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <>
-
       <Paper sx={{ width: "100%", padding: "1%" }}>
-
         {CURRENT_USER != "Normal User" ? (
           <Button variant="contained" sx={{ my: 2 }} onClick={handleAddClick}>
             Add
@@ -630,18 +595,8 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
               >
                 Submit
               </Button>
-            </Grid>
 
-            <Grid
-              item
-              xs={12}
-              sm={3}
-              sx={{ maxWidth: "16% !important", my: 2 }}
-            >
               <Button
-                sx={{
-                  ml: 2,
-                }}
                 variant="outlined"
                 color="success"
                 onClick={handleEditShares}
@@ -661,7 +616,6 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
             </tr>
           </thead>
           <tbody>
-            {console.log("data in jsx", data)}
             {data.length ? (
               data.map((fle) => (
                 <>
@@ -684,6 +638,15 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
             )}
           </tbody>
         </table>
+        <TablePagination
+      component="div"
+      count={totalCount}
+      page={page}
+      onPageChange={handleChangePage}
+      rowsPerPage={rowsPerPage}
+      rowsPerPageOptions={[10, 20, 30, 40, 50]}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+    />
       </Paper>
     </>
   );
