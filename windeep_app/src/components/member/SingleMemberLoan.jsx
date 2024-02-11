@@ -133,36 +133,12 @@ export default function SingleMemberLoan({ CURRENT_USER, USER_TYPES }) {
     setState({ ...state, [anchor]: open });
   };
 
-  const handleRowClick = (id, memberLink) => {
-    navigate(`/member/${id}/${memberLink}`);
+
+
+  const handleTransaction = (loan_id,loan_type) => {
+    navigate(`/member/${id}/transactions/${loan_id}/${loan_type}`);
   };
 
-  const handleTransaction = (loan_id) => {
-    navigate(`/member/${id}/transactions/${loan_id}`);
-  };
-
-  const list = (anchor) => (
-    <Box
-      sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 350 }}
-      role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <List>
-        {Object.entries(profileData[0]).map(([key, value], index) => (
-          <ListItem key={index} disablePadding>
-            <ListItemButton>
-              {key === "image" ? (
-                <img src={value} alt="Profile" className="profile_img" />
-              ) : (
-                <ListItemText primary={`${key} : ${value}`} />
-              )}
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
 
   const handleInputChange = (e) => {
     if (e && e.target) {
@@ -254,7 +230,7 @@ export default function SingleMemberLoan({ CURRENT_USER, USER_TYPES }) {
   useEffect(() => {
     // setData(memberLoan)
     // Make the API request when the component mounts
-    fetch("http://localhost:a /member/loan", {
+    fetch("http://localhost:9000/member/loan", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -464,7 +440,7 @@ export default function SingleMemberLoan({ CURRENT_USER, USER_TYPES }) {
                     <CardActions>
                       <Button
                         variant="contained"
-                        onClick={() => handleTransaction(ele.id)}
+                        onClick={() => handleTransaction(ele.id,ele.loan_type)}
                       >
                         Transactions
                       </Button>

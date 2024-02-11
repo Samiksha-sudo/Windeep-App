@@ -24,7 +24,8 @@ export default function ViewRequests() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id:id      })
+          id:id      
+        })
       })
         .then(response => response.json())
         .then(result => {
@@ -41,6 +42,46 @@ export default function ViewRequests() {
     return (
         <>
             {console.log("viewRequests",viewRequests)}
+            {/* <table class="table table-bordered">
+          <thead>
+            <tr>
+              {columns.map((ele) => (
+                <th key={ele.label}>{ele.label} </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {viewRequests.length ? (
+              viewRequests.map((fle) => (
+                <>
+                  <tr key={fle.date} style={{ cursor: "pointer" }}>
+                    <td>{fle.start_date}</td>
+                    <td>{fle.monthly_contribution}</td>
+                    <td>{fle.total_contribution}</td>
+                    <td>{fle.bonus}</td>
+                    <td>{fle.remarks}</td>
+                    <td>{fle.updated_by}</td>
+                    <td>{fle.admin_remarks}</td>
+                    <td>{generateActionButtons(fle)}</td>
+                  </tr>
+                </>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={columns.length}>No data available</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        {data.length &&         <TablePagination
+      component="div"
+      count={totalCount}
+      page={page}
+      onPageChange={handleChangePage}
+      rowsPerPage={rowsPerPage}
+      rowsPerPageOptions={[10, 20, 30, 40, 50]}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+    />} */}
             {viewRequests.map((ele, index) => (
               <div className={styles.viewRequests}>
                 <Grid container spacing={1}>

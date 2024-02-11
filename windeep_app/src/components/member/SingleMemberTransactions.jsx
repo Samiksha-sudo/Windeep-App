@@ -17,7 +17,7 @@ import EditIcon from '@mui/icons-material/Edit';
 export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { id ,loan_id} = useParams();
+  const { id ,loan_id,loan_type} = useParams();
   console.log(id)
 
   console.log("mainData========================>",id,loan_id)
@@ -403,6 +403,10 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
             setEditMode(false);
       }
 
+      const navigateToLoanPage = () => {
+        navigate(`/member/${id}/pages`);
+      };
+
       const list = (anchor) => (
         <Box
           sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' :350 }}
@@ -451,46 +455,10 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
 
                <Paper sx={{ width: "100%", padding: "1%" }}>  
 
-        <div className="main_table">
-          <TableContainer sx={{ maxHeight: 440 }}>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                <TableCell align="center" colSpan={4}>
-                    <Button variant={isActiveButton('shares') ? 'contained' : 'outlined'} onClick={() => handleRowClick(id, "shares")}>Shares</Button>
-                  </TableCell>
 
-                  <TableCell align="center" colSpan={4}>
-                    <Button variant={isActiveButton('loan') ? 'contained' : 'outlined'} onClick={() => handleRowClick(id, "loan")}>Loan</Button>
-                  </TableCell>
-
-                  <TableCell align="center" colSpan={4}>
-                    <Button variant={isActiveButton('loanCalculator') ? 'contained' : 'outlined'} onClick={() => handleRowClick(id, "loanCalculator")}>Loan Calculator</Button>
-                  </TableCell>
-
-                  <TableCell align="center" colSpan={4}>
-                    <Button variant={isActiveButton('loanRequest') ? 'contained' : 'outlined'} onClick={() => handleRowClick(id, "loanRequest")}>Request Loan</Button>
-                  </TableCell>
-
-                  <TableCell align="center" colSpan={4}>
-                    <Button variant={isActiveButton('loanForm') ? 'contained' : 'outlined'} onClick={() => handleRowClick(id, "loanForm")}>Loan Form</Button>
-                  </TableCell>
-
-                  <TableCell align="center" colSpan={4}>
-                    <Button variant={isActiveButton('gurantorForm') ? 'contained' : 'outlined'} onClick={() => handleRowClick(id, "gurantorForm")}>Gurantor Form</Button>
-                  </TableCell>
-
- 
-                  
-                </TableRow>
-                
-                <TableRow></TableRow>
-              </TableHead>
-            </Table>
-          </TableContainer>
-        </div>
-        <br />
         {CURRENT_USER != "Normal User" ? <Button variant='contained' sx={{ my: 2 }} onClick={handleAddClick}>Add</Button>:""}
+
+        <Button variant='contained' sx={{ my: 2,ml:3 }} onClick={navigateToLoanPage} color="secondary" >Back</Button>
         {data && Object.keys(data).length > 0 && (
         <TableContainer component={Paper} sx={{ my: 3,width:"91%" ,marginLeft:"60px"}}  >
       <Table>
@@ -630,7 +598,7 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
   <thead>
       <tr>
 
-          <th colSpan={11} >Customer Loan Details </th>
+          <th colSpan={11} >Customer Loan Details - Loan Type {loan_type} </th>
       </tr>
     </thead>
     <thead>

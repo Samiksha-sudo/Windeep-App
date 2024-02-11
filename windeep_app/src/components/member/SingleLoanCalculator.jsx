@@ -248,6 +248,10 @@ export default function SingleLoanCalculator({ CURRENT_USER, USER_TYPES }) {
     setIscalculated(false);
   }, [resetData]);
 
+  useEffect(() => {
+  
+  }, []);
+
   const value = 1.5;
 
   return (
