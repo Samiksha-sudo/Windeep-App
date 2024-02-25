@@ -1,6 +1,4 @@
     import React, { useEffect, useState } from 'react'
-    import Footer from '../Footer/Footer'
-    import Navbaar from '../Navbaar/Navbaar'
     import Button from '@mui/material/Button';
     import styles from "./BasicInfo.module.css";
     import BorderColorTwoToneIcon from "@mui/icons-material/BorderColorTwoTone";
@@ -13,21 +11,11 @@
     import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
     import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
     import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-    import MemberForm2 from './MemberForm2';
-    import MemberForm3 from './MemberForm3';
-    import Stepper from '@mui/material/Stepper';
-    import Step from '@mui/material/Step';
-    import StepLabel from '@mui/material/StepLabel';
-
-    // import { Document, Page } from 'react-docx';
-
-    import { Worker, Viewer } from '@react-pdf-viewer/core';
-
-    import { renderAsyncDocument } from 'react-docx';
 
 
 
-    export default function MemberForm1({CURRENT_USER,USER_TYPES,language}) {
+
+    export default function MemberForm1({USER_TYPES,language}) {
 
     const regForName = RegExp(/^[A-Za-z]{3,30}$/);
     const navigate = useNavigate();
@@ -92,33 +80,6 @@
             reader.readAsDataURL(file);
           }
         };
-
-        const handleUnitChange = (event) => {
-            setRegisterCredentials({
-              ...registerCredentials,
-              unit: event.target.value,
-            });
-            setResetData(false);
-            setIscalculated(false)
-          };
-          const calculateloan = () => {
-            if (
-              registerCredentials.name !== "" &&
-              registerCredentials.age !== "" &&
-              registerCredentials.occupation !== "" &&
-              registerCredentials.processingFee !== ""
-            ) {
-              setCalculate(true);
-              setIscalculated(true);
-              setErrors({}); // Clear any previous errors
-            } else {
-              console.log("errors")
-              setErrors({ ...errors, submit_error: "Enter All Loan Details" });
-            }
-          };
-          const detailLoan = () =>{
-            setDetail(true)
-          }
 
         // For Validation
         const handleInputChange = (event) => {
@@ -677,14 +638,6 @@
                     View Request
                 </Button>
                 </Grid>
-
-                    <Button  sx={{ my:4 }}
-                            variant="contained"
-                            color="success"
-                            className={styles.button_fun}
-                        >
-                            Submit
-                        </Button>
 
                   
                 </div>

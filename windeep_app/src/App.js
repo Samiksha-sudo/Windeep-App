@@ -22,11 +22,11 @@
   const MemberForm2 = lazy (()=>import('./components/member/MemberForm2'))
   const MemberForm3 = lazy (()=>import('./components/member/MemberForm3'))
   const GuranteeForm = lazy(()=>import('./components/member/GuranteeForm'))
-  const GuranteeRequests = lazy(()=>import('./components/member/GuranteeRequests'))
+  const ViewRequests = lazy(()=>import('./components/member/ViewRequests'))
   const ParentTabs = lazy(()=>import('./components/member/ParentTabs'));
   const Add = lazy(() => import('./components/add/Add'))
-
-
+  const MemberViewRequests = lazy(() => import('./components/member/MemberViewRequests'))
+  
   const USER_TYPES = {
     PUBLIC:"Public User",
     NORMAL:"Normal User",
@@ -83,7 +83,9 @@
 
                       <Route path='/member/:id/gurantorForm' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><GuranteeForm CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 
-                      <Route path='/member/:id/viewRequests' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><GuranteeRequests CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                      <Route path='/member/:id/memberViewRequests' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><MemberViewRequests CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+
+                      <Route path='/viewRequests' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><ViewRequests CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
                       
                       <Route path='/member/:id/pages' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><ParentTabs  CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
                       

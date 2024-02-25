@@ -34,16 +34,19 @@ memeberShareRouter.post("/", async (req, res) => {
     }
 });
 
-memeberShareRouter.post("/totalData", async (req, res) => {
+memeberShareRouter.post("/totalContribution", async (req, res) => {
   try {
       console.log("request body in member", req.body);
-      let query = `SELECT * FROM shares s where s.member_id = "${req.body.id}" and is_deleted = 0 and monthly_contribution is not null order by id desc limit 1;`
+      let query = `SELECT total_contribution+monthly_contribution as totalContribution ,monthly_contribution FROM windeep_finance.shares where  
+      member_id = "${req.body.id}" and is_deleted = 0 and monthly_contribution is not null order by id desc limit 1 
+     ;`;
       let result = await sequelize.query(query, { type: QueryTypes.SELECT });
       console.log("query line 15", JSON.stringify(query));
       console.log("result line 16-->", JSON.stringify(result));
 
+      // Check if a user with the provided email and password exists
       if (result.length > 0) {
-          res.json({ payload:[{ result: result,count:resultCount[0].totalCount}],message:"Member data fetched successfully",error:"" });
+          res.json({ payload:[{ result: result}],message:"Member data fetched successfully",error:"" });
       } else {
           res.status(401).json({ payload:[{ result: []}],message:"",error:"No Member Data" });
       }
@@ -53,13 +56,10 @@ memeberShareRouter.post("/totalData", async (req, res) => {
   }
 });
 
-
-memeberShareRouter.post("/totalContribution", async (req, res) => {
+memeberShareRouter.post("/totalMonthlyContribution", async (req, res) => {
   try {
       console.log("request body in member", req.body);
-      let query = `SELECT total_contribution+monthly_contribution as totalContribution ,monthly_contribution FROM windeep_finance.shares where  
-      member_id = "${req.body.id}" and is_deleted = 0 order by id desc limit 1 
-     ;`;
+      let query = `SELECT SUM(monthly_contribution)+IF(SUM(bonus) is not null,SUM(bonus),0) as sumMonthlyContribution FROM shares s where s.member_id = "${req.body.id}" and is_deleted = 0  order by id desc ;`
       let result = await sequelize.query(query, { type: QueryTypes.SELECT });
       console.log("query line 15", JSON.stringify(query));
       console.log("result line 16-->", JSON.stringify(result));

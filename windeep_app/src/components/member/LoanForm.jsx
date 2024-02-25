@@ -31,6 +31,7 @@
       }
   };
   const [selectedLanguage, setSelectedLanguage] = useState('english');
+  const [data, setData] = useState([]);
 
   const handleLanguageChange = (event) => {
     setSelectedLanguage(event.target.value);
@@ -167,42 +168,47 @@
           setState({ ...state, [anchor]: open });
         };
 
-        const handleRowClick = (id,memberLink) => {
-          navigate(`/member/${id}/${memberLink}`);
+
+
+        const downloadSampleWord = async () => {
+          try {
+            // Fetch the sample word file link from the backend
+            const response = await fetch('http://localhost:9000/member/downloadLink', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              }
+            });
+            
+            // Parse the response JSON
+            const result = await response.json();
+            console.log('API Response:', result.payload[0]);
+            let downloadUrl = result.payload[0].link
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.setAttribute('download', '');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        
+            
+          } catch (error) {
+            console.error('API Error:', error);
+          }
         };
-
-        const handleClick = () => {
-          navigate(`/home`);
-        };
+        
+        
 
 
-        const list = (anchor) => (
-          <Box
-            sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' :350 }}
-            role="presentation"
-            onClick={toggleDrawer(anchor, false)}
-            onKeyDown={toggleDrawer(anchor, false)}
-          >
-              <List>
-              {Object.entries(profileData[0]).map(([key, value], index) => (
-          <ListItem key={index} disablePadding>
-            <ListItemButton>
-              {key === 'image' ? (
-                <img src={value} alt="Profile" className="profile_img" />
-              ) : (
-                <ListItemText primary={`${key} : ${value}`} />
-              )}
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+      
+
+
+
+        const handleFileUpload = (event) => {
+          const file = event.target.files[0];
           
-          </Box>
-        );
-
-
-
-
+          console.log('Selected file:', file);
+      };
 
 
 
@@ -210,45 +216,28 @@
       return (
           <>
 
-        <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
-            <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
-              {steps.map((label) => (
-                <Step key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-            {activeStep === steps.length ? (
-              <React.Fragment>
-                <Typography variant="h5" gutterBottom>
-                  Thank you for registering.
-                </Typography>
-                <Typography variant="subtitle1">
-                  <Button onClick={()=>handleClick()}>Home</Button>
-                </Typography>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                {getStepContent(activeStep, selectedLanguage)}
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  {activeStep !== 0 && (
-                    <Button onClick={handleBack} sx={{ mt: 3, ml: 1 }}>
-                      Back
-                    </Button>
-                  )}
+<div className={styles.footer}>
+                <Button onClick={downloadSampleWord} className={styles.button} variant="contained">Download Sample Loan Document</Button>
+            </div>
+            <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+            <input
+                accept=".docx"
+                style={{ display: 'none' }}
+                id="contained-button-file"
+                multiple
+                type="file"
+                onChange={handleFileUpload}
+            />
+            <label htmlFor="contained-button-file">
+                <Button variant="contained" component="span">
+                    Upload Loan Form
+                </Button>
+            </label>
 
-                  <Button
-                    variant="contained"
-                    onClick={handleNext}
-                    sx={{ mt: 3, ml: 1 }}
-                  >
-                    {activeStep === steps.length - 1 ? 'Submit' : 'Next'}
-                  </Button>
-                </Box>
-              </React.Fragment>
-            )}
-          </Paper>
+        </Paper>
+        <br/>
 
+<Button variant='contained' color='success'>Send</Button>
           </>
       )
   } 

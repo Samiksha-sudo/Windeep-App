@@ -22,6 +22,7 @@ export default function Navbaar() {
     console.log("token", localStorage.getItem('_token'));
     // const UserToken = getStoreState("loggedInUserReducer");
     const UserToken = useSelector((state) => state.loggedInUserReducer);
+    console.log("userToken0",UserToken)
     const logout = () => {
       setStoreState("USER_LOGOUT",{})
       localStorage.removeItem('_token');
@@ -49,23 +50,39 @@ export default function Navbaar() {
   
               <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav">
-                  <li className="nav-item">
-                    <NavLink className="nav-link" activclassname="active_navbar" to="/">
+
+                  {UserToken.isUserLoggedIn ? (
+                    <>
+                      {UserToken.isAdmin ?
+                        <>
+                                          <li className="nav-item">
+                    <NavLink className="nav-link" activclassname="active_navbar" to="/home">
                       Home
                     </NavLink>
                   </li>
-                  {UserToken.isUserLoggedIn ? (
-                    <>
-                      {UserToken.isAdmin && 
-                      <>
+                          <li className="nav-item ml-3">
+                            <NavLink className="nav-link" activclassname="active_navbar" to="/member">
+                              Member
+                            </NavLink>
+                          </li>
+                          <li className="nav-item ml-auto">
+                            <NavLink className="nav-link" activclassname="active_navbar" to="/viewRequests">
+                              View Requests
+                            </NavLink>
+                          </li>
+                          <li className="nav-item ml-3">
+                            <NavLink className="nav-link" activclassname="active_navbar" to="/add">
+                              Add
+                            </NavLink>
+                          </li>
+
+                        </>
+                        : 
+                        <>
                         <li className="nav-item ml-3">
-                          <NavLink className="nav-link" activclassname="active_navbar" to="/member">
-                            Member
-                          </NavLink>
-                        </li>
-                        <li className="nav-item ml-3">
-                          <NavLink className="nav-link" activclassname="active_navbar" to="/add">
-                            Add
+  
+                          <NavLink className="nav-link" activeClassName="active_navbar" to={`/member/${UserToken.member_id}/pages`}>
+                              Member
                           </NavLink>
                         </li>
                       </>
@@ -78,6 +95,11 @@ export default function Navbaar() {
                     </>
                   ) : (
                     <>
+                    <li className="nav-item">
+                    <NavLink className="nav-link" activclassname="active_navbar" to="/">
+                      Home
+                    </NavLink>
+                  </li>
                       <li className="nav-item ml-3">
                         <NavLink className="nav-link" activclassname="active_navbar" to="/member/login">
                           Member Login

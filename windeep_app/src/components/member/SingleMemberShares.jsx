@@ -9,23 +9,33 @@ import {
   Grid,
   Alert
 } from "@mui/material";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import image1 from "../../assets/images/photoImage.jpg";
 import styles from "./BasicInfo.module.css";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { useSelector } from 'react-redux';
+// import { Client } from 'whatsapp-web.js';
+// const client = new Client();
+// client.on('ready', () => {
+//     const number = "9518354701"; // Replace with the recipient's phone number
+//     const text = "Hey Samiksha"; // Your message
+//     const chatId = number.substring(1) + "@c.us"; // Format the chat ID
+//     client.sendMessage(chatId, text); // Send the message
+// });
 
-export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
+
+export default function SingleMembershares() {
   const navigate = useNavigate();
-  const location = useLocation();
   const { id } = useParams();
+  const UserToken = useSelector((state) => state.loggedInUserReducer);
 
-  const columns = [
+  let columns = []
+
+  if(UserToken.isAdmin ){
+
+  columns = [
     { id: "date", label: "Date", minWidth: 170 },
     {
       id: "monthly_contribution",
@@ -38,7 +48,20 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     { id: "updatedBy", label: "Updated By", minWidth: 100 },
     { id: "adminRemarks", label: "Admin Remarks", minWidth: 100 },
     { id: "action", label: "Action", minWidth: 100 },
-  ];
+  ]
+}else{
+  columns = [
+    { id: "date", label: "Date", minWidth: 170 },
+    {
+      id: "monthly_contribution",
+      label: "Monthly Contribution",
+      minWidth: 100,
+    },
+    { id: "total_contribution", label: "Total Contribution", minWidth: 100 },
+    { id: "bonus", label: "Bonus", minWidth: 100 },
+    { id: "remarks", label: "Remarks", minWidth: 100 }
+  ]
+}
 
   const [data, setData] = useState([]);
   const mystyles = {
@@ -67,6 +90,7 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
     errdate: "",
     errmonthlyContribution: "",
     errtotalContribution:"",
+    errBonus:"",
     submit_error: ""
 });
 
@@ -122,7 +146,7 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
   const handleEditShares = async () => {
 
     formData.member_id = data[0].member_id;
-    formData.update_by = "Pradeep Khengare";
+    formData.update_by = UserToken.name;
 
     const limit = rowsPerPage;
     const offset = page * rowsPerPage;
@@ -206,7 +230,7 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
 
   const handleDelete = async (row) => {
     formData.member_id = data[0].member_id;
-    formData.update_by = "Pradeep Khengare";
+    formData.update_by = UserToken.name;
   
     const limit = rowsPerPage;
     const offset = page * rowsPerPage;
@@ -300,14 +324,14 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
 
 
   const handleAddShares = async () => {
-    formData.update_by = "Pradeep Khengare";
-    formData.created_by = "Pradeep Khengare";
+    formData.update_by = UserToken.name;
+    formData.created_by = UserToken.name;
     formData.member_id = id;
 
     const limit = rowsPerPage;
     const offset = page * rowsPerPage;
 
-    if(formData.monthly_contribution != "" && formData.total_contribution != ""){
+    if((formData.monthly_contribution != "" && formData.total_contribution != "") || formData.bonus){
       await fetch("http://localhost:9000/member/shares/add", {
         method: "POST",
         headers: {
@@ -338,7 +362,7 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
         setErrors({ ...errors, submit_error: "" })
       } else{
         setIsGridOpen(true);
-        setErrors({ ...errors, submit_error: "Enter Monthly Contribution and Total Contribution" });
+        setErrors({ ...errors, submit_error: "Enter Monthly Contribution and Total Contribution Or Bonus" });
     }
   
       await fetch("http://localhost:9000/member/shares", {
@@ -392,6 +416,7 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
       });
   };
 
+
   const generateActionButtons = (row) => (
     <>
       <IconButton color="error" onClick={() => handleDelete(row)}>
@@ -404,42 +429,52 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
   );
 
   const handleInputChange = (e) => {
-
     const { name, value } = e.target;
-        let error = "";
-        switch (name) {
+    let error = "";
 
-            case "monthly_contribution":
-                error = value.length > 0 ? "" : "Please Enter monthly Contribution";
-                setErrors({ ...errors, errmonthlyContribution: error });
-                break;
+    switch (name) {
+        case "monthly_contribution":
+            error = value.length > 0 ? "" : "Please Enter monthly Contribution";
+            setErrors({ ...errors, errmonthlyContribution: error });
+            break;
 
-            case "total_contribution":
-                error =  value.length > 0 ? "" : "Please Enter total Contribution";
-                setErrors({ ...errors, errtotalContribution: error });
-                break;
+        case "total_contribution":
+            error = value.length > 0 ? "" : "Please Enter total Contribution";
+            setErrors({ ...errors, errtotalContribution: error });
+            break;
 
-            default:
-                break;
-        }
+        case "bonus":
+            // Check if bonus is not empty and is a valid number
+            if (value.trim() !== "" && isNaN(Number(value))) {
+                error = "Bonus must be a valid number";
+            } else {
+                error = "";
+            }
+            setErrors({ ...errors, errBonus: error });
+            break;
 
+        default:
+            break;
+    }
 
     if (e && e.target) {
-      // Handle changes from regular text fields
-      const { name, value } = e.target;
-
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
+        // Handle changes from regular text fields
+        setFormData((prevData) => ({
+            ...prevData,
+            [name]: value,
+        }));
     } else if (e) {
-      // Handle changes from date picker
-      setFormData((prevData) => ({
-        ...prevData,
-        date: e, // Assuming the date picker provides the date object directly
-      }));
+        // Handle changes from date picker
+        setFormData((prevData) => ({
+            ...prevData,
+            date: e, // Assuming the date picker provides the date object directly
+        }));
     }
-  };
+
+    // Set the error state
+    setErrors({ ...errors, [name]: error });
+};
+
 
   const handleAddClick = async() => {
     setIsGridOpen(!isGridOpen);
@@ -589,7 +624,7 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
   return (
     <>
       <Paper sx={{ width: "100%", padding: "1%" }}>
-        {CURRENT_USER != "Normal User" ? (
+        {UserToken.isAdmin  ? (
           <Button variant="contained" sx={{ my: 2 }} onClick={handleAddClick}>
             Add
           </Button>
@@ -605,6 +640,8 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
           {totalShares}{" "}
         </Button>
         <br />
+      
+      <br/>
         {errors.submit_error.length !== 0 && (
                         <Alert severity="error">{errors.submit_error}</Alert>
                     )}
@@ -621,16 +658,15 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
               sm={3}
               sx={{ maxWidth: "16% !important", my: 1 }}
             >
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DatePicker"]}>
-                  <DatePicker
-                    label="Date"
-                    onChange={handleInputChange}
-                    name="date"
-                    placeholder="Select Date"
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
+<input
+          type="date"
+          id="date"
+          name="date"
+          onChange={handleInputChange}
+          className={styles.inputData}
+          style={styles.input}
+        />
+    <i class="calendar-icon fas fa-calendar-alt"></i>
             </Grid>
             <Grid
               item
@@ -650,7 +686,7 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
                 className={styles.errorText}
                 InputProps={{
                   classes: {
-                    helperText: mystyles.helperText, // Apply custom style to helper text
+                    helperText: mystyles.helperText, 
                   },
                 }}
               />
@@ -673,7 +709,7 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
                 className={styles.errorText}
                 InputProps={{
                   classes: {
-                    helperText: mystyles.helperText, // Apply custom style to helper text
+                    helperText: mystyles.helperText, 
                   },
                 }}
               />
@@ -688,10 +724,17 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
                 type="text"
                 name="bonus"
                 value={formData.bonus}
+                helperText={errors.errBonus}
                 onChange={handleInputChange}
                 label="Bonus"
                 placeholder="Bonus"
                 sx={{ marginLeft: "8px" }}
+                className={styles.errorText}
+                InputProps={{
+                  classes: {
+                    helperText: mystyles.helperText, 
+                  },
+                }}
               />
             </Grid>
             <Grid
@@ -773,9 +816,12 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
                     <td>{fle.total_contribution}</td>
                     <td>{fle.bonus}</td>
                     <td>{fle.remarks}</td>
+                    {UserToken.isAdmin ? 
+                    <>
                     <td>{fle.updated_by}</td>
                     <td>{fle.admin_remarks}</td>
                     <td>{generateActionButtons(fle)}</td>
+                    </>:""}
                   </tr>
                 </>
               ))
@@ -786,7 +832,8 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
             )}
           </tbody>
         </table>
-        {data.length &&         <TablePagination
+       
+        {data.length ?         <TablePagination
       component="div"
       count={totalCount}
       page={page}
@@ -794,7 +841,7 @@ export default function SingleMembershares({ CURRENT_USER, USER_TYPES }) {
       rowsPerPage={rowsPerPage}
       rowsPerPageOptions={[10, 20, 30, 40, 50]}
       onRowsPerPageChange={handleChangeRowsPerPage}
-    />}
+    />:""}
 
       </Paper>
     </>

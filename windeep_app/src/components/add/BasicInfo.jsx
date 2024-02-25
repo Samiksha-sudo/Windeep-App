@@ -12,7 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Swal from 'sweetalert2'
 import {jwtDecode} from 'jwt-decode';   
-
+import { useSelector } from 'react-redux';
 import {MemberRegister } from '../../config/LoginService'
 
 import { TextField, FormControl, Button, InputAdornment, Container, IconButton, Alert } from "@mui/material";
@@ -34,7 +34,7 @@ const regForAadharCard = RegExp(/^[0-9]{12}$/);
 const regForPanCard = RegExp(/^[A-Z]{5}[0-9]{4}[A-Z]$/);
 const regForMobile = RegExp(/^[0-9]{10}$/);
 const regForAccountNumber = RegExp(/^\d{14}$/)
-const regForIFSCCode = RegExp(/^[A-Z]{4}0[A-Z0-9]{6}$/)
+// const regForIFSCCode = RegExp(/^[A-Z]{4}0[A-Z0-9]{6}$/)
 
 export default function BasicInfo() {
     const [errors, setErrors] = useState({
@@ -69,6 +69,8 @@ export default function BasicInfo() {
     });
 
     const navigate = useNavigate();
+    const UserToken = useSelector((state) => state.loggedInUserReducer);
+    console.log("userToken0",UserToken)
 
     // For Validation
     const handler = (event) => {
@@ -105,10 +107,10 @@ export default function BasicInfo() {
                 setErrors({ ...errors, erraccountNumber: error });
                 break;
 
-            case "ifsc":
-                error = regForIFSCCode.test(value) ? "" : "Invalid IFSC Code";
-                setErrors({ ...errors, errifsc: error });
-                break;
+            // case "ifsc":
+            //     error = regForIFSCCode.test(value) ? "" : "Invalid IFSC Code";
+            //     setErrors({ ...errors, errifsc: error });
+            //     break;
 
             case "password":
                 error = regForpassword.test(value) ? "" : "Enter Strong Password";
@@ -147,23 +149,38 @@ export default function BasicInfo() {
 
         await MemberRegister(registerCredentials)
         .then(res=>{
+            if(res.data.err == 0){
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: res.data.msg,
+                })
+            }else{
             console.log("datatattatat------------------->",res)
-                localStorage.setItem("_token", res.data.token);
-                let decode = jwtDecode(res.data.token)
-                console.log("decode",decode)
-                navigate("/")
+                if(UserToken.isAdmin ){
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Member Added successfully',
+                        text: `MemberId: ${res.data.memberId} `
+                      });
+                      
+
+                }else{
+                    navigate("/member/login")
+                }
+            }
           
         }). catch (error=> {
+            
             console.log("error in catch",error)
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'Something went wrong',
+                text: error.msg,
             })
         })
 
         }
-
         else {
             setErrors({ ...errors, submit_error: "Enter All Registration Details" });
         }

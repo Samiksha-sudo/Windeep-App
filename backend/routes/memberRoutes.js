@@ -5,17 +5,55 @@ import nodemailer from "nodemailer";
 import multer from "multer";
 import bcrypt from "bcrypt";
 import { sequelize, QueryTypes } from '../config/connection.js';
+import cron from 'node-cron'
+// import firebase from "firebase";
+
+
+import { initializeApp } from "firebase/app";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
+// import { getAnalytics } from "firebase/analytics"; 
+
+
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyBdNiv-2tj0KgL92ZcNXbWXhwo2yEwNNEY",
+  authDomain: "windeep-7e254.firebaseapp.com",
+  projectId: "windeep-7e254",
+  storageBucket: "windeep-7e254.appspot.com",
+  messagingSenderId: "292488325849",
+  appId: "1:292488325849:web:6ad2ba954e75722b77ecc8",
+  measurementId: "G-5K8KLV3X9Q"
+};
+
+
+
+const app = initializeApp(firebaseConfig);
+const storageData = getStorage(app);
 
 const saltRounds = 10;
 const jwtSecret = "windeepApp";
 const memberRoutes = express.Router();
 let transporter = nodemailer.createTransport({
   service: "gmail",
+  port:465,
+  secure:true,
+  logger:true,
+  debug:true,
+  secureConnection:false,
   auth: {
-    user: "your email",
-    pass: "your password",
+    user: "kadsamiksha1999@gmail.com",
+    pass: "skum dvfb oqxf vvit"
   },
+  tls:{
+    rejectUnauthorized:true
+  }
 });
+
+
+const initialDate = new Date(); // Change this to your desired initial date
+
+// Calculate the next run date as 25 days after the initial date
+const nextRunDate = new Date(initialDate.getTime() + (25 * 24 * 60 * 60 * 1000));
 
 const DIR = "../frontend/public/images/";
 const storage = multer.diskStorage({
@@ -46,15 +84,9 @@ memberRoutes.post("/registerMember", async (req, res) => {
     let passwordHash = "";
     console.log("---------------------------------------->",req.body)
     // Hash the password with the generated salt
-    await bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
-        if (err) {
-          console.error('Error generating hash:', err);
-        } else {
-            passwordHash = hash
-            console.log('Generated hash:', passwordHash);
-          
-        }
-      });
+     passwordHash = await bcrypt.hash(req.body.password, saltRounds);
+
+        console.log('Generated hash:', passwordHash);
     console.log("password",passwordHash)
     console.log("request body in member", req.body);
     let query = `SELECT count(member_id) as count FROM member_details where aadhar_card = "${req.body.aadharCard}";`;
@@ -100,51 +132,114 @@ memberRoutes.post("/registerMember", async (req, res) => {
     }
   
 });
-memberRoutes.post("/forgetservice", (req, res) => {
-  // check if email exsist in db
-  registerModel.findOne({ email: req.body.email }, (err, data) => {
-    if (err) {
-      res.json({ err: 1, msg: "Something went wrong in checking data" });
-    } else if (data == null) {
-      res.json({ err: 1, msg: "User not found" });
-    } else {
-      // if email exsist create otp and send mail
-      let otp = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+
+memberRoutes.post("/listMembers", async (req, res) => {
+
+  let query = `select md.name,md.member_id,lt.start_date,lt.end_date,lt.total_loan,lt.processing_fee,lt.period,lt.unit,lt.interest
+  from member_details md left join loan_transactions lt on lt.member_id = md.member_id 
+  where (md.name LIKE '%${req.body.search}%' OR md.member_id LIKE '%${req.body.search}%')and
+  md.is_deleted = 0 limit ${req.body.limit} offset ${req.body.offset};`;
+  let result = await sequelize.query(query, { type: QueryTypes.SELECT });
+
+  console.log("query line 51", JSON.stringify(query));
+  console.log("result line 52-->", JSON.stringify(result));
+
+  let query1 = `select count(*) as totalCount
+  from member_details md left join loan_transactions lt on lt.member_id = md.member_id 
+  where (md.name LIKE '%${req.body.search}%' OR md.member_id LIKE '%${req.body.search}%')and
+  md.is_deleted = 0 ;`;
+  let result1 = await sequelize.query(query1, { type: QueryTypes.SELECT });
+
+  console.log("query line 51", JSON.stringify(query1));
+  console.log("result line 52-->", JSON.stringify(result1));
+
+  res.json({ err: 1, msg: "Member registered successfully", payload:[{members: result,count:result1[0].totalCount }] 
+  });
+
+
+});
+
+memberRoutes.post("/downloadLink", async (req, res) => {
+  let query = `SELECT download_link FROM windeep_finance.loan_form where is_deleted = 0 and member_id = 0;`;
+  let result = await sequelize.query(query, { type: QueryTypes.SELECT });
+
+  console.log("query line 51", JSON.stringify(query));
+  console.log("result line 52-->", JSON.stringify(result));
+  let link = "";
+
+const httpsReference = ref(storageData, result[0].download_link);  
+await getDownloadURL(httpsReference)
+  .then((url) => {
+    link = url
+  })
+  .catch((error) => {
+    // A full list of error codes is available at
+    // https://firebase.google.com/docs/storage/web/handle-errors
+    switch (error.code) {
+      case 'storage/object-not-found':
+        // File doesn't exist
+        break;
+      case 'storage/unauthorized':
+        // User doesn't have permission to access the object
+        break;
+      case 'storage/canceled':
+        // User canceled the upload
+        break;
+
+      // ...
+
+      case 'storage/unknown':
+        // Unknown error occurred, inspect the server response
+        break;
+    }
+  });
+
+
+
+
+  res.json({ err: 1, msg: "Link Fetched successfully", payload:[{link: link}] 
+  });
+
+
+});
+
+memberRoutes.post("/listSingleMember", async (req, res) => {
+
+  let query = `SELECT name as Name,member_id as "Member Id" ,
+    email as Email,contact_no as Mobile,dob as "Date of Birth",aadhar_card as "Aadhar Card" ,pan_card as "Pan Card",
+    ifsc_code as "IFSC Code", account_number as "Account Number",bank_address as "Bank Address"
+  FROM windeep_finance.member_details where is_deleted = 0 and member_id = "${req.body.id}" ;
+  ;`;
+  let result = await sequelize.query(query, { type: QueryTypes.SELECT });
+
+  console.log("query line 51", JSON.stringify(query));
+  console.log("result line 52-->", JSON.stringify(result));
+
+
+  res.json({ err: 1, msg: "Member Listed successfully", payload:[{ result}] 
+  });
+
+
+});
+
+
+
+
+
+cron.schedule(`0 0 */${nextRunDate.getDate()} */25 * *`, async () => {
+  try {
+    let query = `SELECT s.member_id,md.email,md.name
+    FROM windeep_finance.shares s left join member_details md on md.member_id = s.member_id
+    WHERE total_contribution = 46000 AND s.is_deleted = 0 
+    GROUP BY member_id;`;
+    let result = await sequelize.query(query, { type: QueryTypes.SELECT });
+    
+    result.map(ele => {
       let mailOptions = {
-        from: "kadsamiksha347@gmail.com",
-        to: req.body.email,
-        subject: " Password reset",
-        html: `<!DOCTYPE html>
-                <html>
-                <head>
-                <style>
-                .ot{
-                    color:red;
-                    font-weight: bold;
-                }
-                .n{
-                    font-weight: bold;
-                    font-size: 20px;
-                }
-                .ot1{
-                    font-weight: bold;
-                    color:red;
-                    font-size: 25px;
-                }
-                </style>
-                </head>
-                <body>
-                <h1>Neo<span class="ot1">STORE</span></h1>
-                <hr/>
-                Hello <span class="n"> ${
-                  data.firstname + " " + data.lastname
-                } </span>,
-                <div>A password reset for your account was requested.</div>
-               <div> Your OTP for Neo<span class="ot">STORE</span> password reset is <span class="ot1">${otp}</span> </div>
-               <div>Note that this OTP is valid for 24 hours. After the time limit has expired, you will have to resubmit the request for a password reset.</div> <br/>
-               <div>If you did not make this request, please Contact Us. </div>
-                </body>
-    </html>`,
+        from: "kadsamiksha1999@gmail.com",
+        to: ele.email,
+        subject: "Windeep Finance",
+        text: `${ele.name}, Your next month for shares will be last month. Please fill your last month fees.`,
       };
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
@@ -153,124 +248,13 @@ memberRoutes.post("/forgetservice", (req, res) => {
           console.log("Email sent: " + info.response);
         }
       });
-      res.json({ err: 0, otp: otp });
-    }
-  });
-});
-memberRoutes.post("/emailSubscribeService", (req, res) => {
-  // sending email
-
-  let mailOptions = {
-    from: "kadsamiksha347@gmail.com",
-    to: req.body.email,
-    subject: "Subscription",
-    text: "Thankyou for Subscribing!!!!!",
-  };
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-    }
-  });
-  res.json({ err: 0, msg: "Email Send successfully" });
-});
-memberRoutes.post("/resetService", (req, res) => {
-  req.body.password = bcrypt.hashSync(req.body.password, saltRounds);
-  registerModel.updateOne(
-    { email: req.body.email },
-    { $set: { password: req.body.password } },
-    (err, data) => {
-      if (err) {
-        res.json({ err: 1, msg: "Something went wrong in checking data" });
-      } else {
-        res.json({ err: 0, msg: "Password updated successfully!!" });
-      }
-    }
-  );
-});
-memberRoutes.post("/changePaswordService", (req, res) => {
-  req.body.password = bcrypt.hashSync(req.body.password, saltRounds);
-  registerModel.findOneAndUpdate(
-    { email: req.body.email },
-    { $set: { password: req.body.password } },
-    { new: true },
-    (err, data) => {
-      if (err) {
-        res.json({ err: 1, msg: "Something went wrong in checking data" });
-      } else {
-        const token = encryptData(data);
-        res.json({
-          err: 0,
-          msg: "Password updated successfully!!",
-          token: token,
-        });
-      }
-    }
-  );
-});
-memberRoutes.post("/validate", (req, res) => {
-  let hashbcrypt = false;
-  registerModel.find({}, (err, data) => {
-    if (err) {
-      console.log(err);
-    } else {
-      // checks if email exsist in db checks bcrypted password and pass token in localstorage
-      data.map((ele) => {
-        if (ele.email === req.body.email) {
-          hashbcrypt = bcrypt.compareSync(req.body.password, ele.password);
-          if (hashbcrypt) {
-            const token = encryptData(ele);
-            res.json({ err: 0, msg: "Login Success", token: token });
-          }
-        }
-      });
-      // if(pass does not match )
-      if (!hashbcrypt) {
-        res.json({ err: 1, msg: "Email or Password does not Match" });
-      }
-    }
-  });
-});
-memberRoutes.post("/profileeditService", (req, res) => {
-  registerModel.findOneAndUpdate(
-    { email: req.body.originalEmail },
-    {
-      $set: {
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        gender: req.body.gender,
-        mobile: req.body.mobile,
-        email: req.body.email,
-      },
-    },
-    { new: true },
-    (err, data) => {
-      if (err) throw err;
-      else {
-        const token = encryptData(data);
-        res.json({ err: 0, msg: "Address added", token: token, values: data });
-      }
-    }
-  );
+    });
+    console.log('Scheduled email task executed successfully.');
+  } catch (error) {
+    console.error('Error executing scheduled email task:', error);
+  }
 });
 
-memberRoutes.post("/addAddressService", (req, res) => {
-  // let useremail = req.params.email
-  registerModel.findOneAndUpdate(
-    { email: req.body.email },
-    { $set: { addresses: req.body.data } },
-    { new: true },
-    (err, data) => {
-      if (err) {
-        console.log(err);
-      } else {
-        const token = encryptData(data);
-        res.json({ err: 0, msg: "Address added", token: token });
-      }
-    }
-  );
-});
 memberRoutes.post(
   "/profilePicService",
   upload.single("profileImg"),
@@ -298,23 +282,7 @@ memberRoutes.post(
     );
   }
 );
-memberRoutes.post("/cartSaveService", (req, res) => {
-  console.log(req.body, "line 218");
-  registerModel.findOneAndUpdate(
-    { email: req.body.email },
-    { $set: { cart: req.body.data } },
-    { new: true },
-    (err, data) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(data);
-        const token = encryptData(data);
-        res.json({ err: 0, msg: "cart added", token: token });
-      }
-    }
-  );
-});
+
 
 const encryptData = (data) => {
   let pay = {

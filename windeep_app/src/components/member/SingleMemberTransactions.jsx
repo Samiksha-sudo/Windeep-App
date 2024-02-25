@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Footer from '../Footer/Footer'
 import Navbaar from '../Navbaar/Navbaar'
 import Button from '@mui/material/Button';
-import {  Paper,Table,TableCell,TableContainer,TableHead,Checkbox, FormControlLabel,TableBody,TableRow ,Box,Drawer,List,ListItem,ListItemButton,ListItemText,Grid,TextField} from '@mui/material'
+import {  Paper,Table,TableCell,TableContainer,TableHead,Checkbox, FormControlLabel,TableBody,TableRow ,Box,Drawer,List,ListItem,ListItemButton,ListItemText,Grid,TextField,Alert} from '@mui/material'
 import { useParams,useLocation } from 'react-router-dom';
 import image1 from "../../assets/images/photoImage.jpg";
 import { useNavigate } from "react-router-dom";
@@ -13,31 +13,48 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { useSelector } from 'react-redux';
 // import {singleLoanDetails} from "../../utils/database/data"
 export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
   const navigate = useNavigate();
   const location = useLocation();
   const { id ,loan_id,loan_type} = useParams();
+  const UserToken = useSelector((state) => state.loggedInUserReducer);
   console.log(id)
+  const regForNumber = /^[0-9]*$/;
 
   console.log("mainData========================>",id,loan_id)
-   
-    const columns = [
-        { id: 'Date', label: 'Date', minWidth: 170 },
-        { id: 'period', label: 'Period', minWidth: 100 },       
-        { id: 'EMI', label: 'EMI', minWidth: 100 },
-        { id: 'Principal', label: 'Principal', minWidth: 100 },
-        { id: 'balance', label: 'Balance', minWidth: 100 },
-        { id: 'Interest', label: 'Int.', minWidth: 100 },
-        { id: 'Fee/Fine', label: 'Fee Fine', minWidth: 100 },
-        { id: 'onlyInterest', label: 'Only Interest', minWidth: 100 },
-        { id: 'Remarks', label: 'Remarks', minWidth: 100 },
-        { id: 'adminRemarks', label: 'Admin Remarks', minWidth: 100 },
-        { id: 'action', label: 'Action', minWidth: 150 }
-        
-         ];
 
-    const columnsDefault = [
+let columns = []
+  if(UserToken.isAdmin){
+     columns = [
+      { id: 'Date', label: 'Date', minWidth: 170 },
+      { id: 'period', label: 'Period', minWidth: 100 },       
+      { id: 'EMI', label: 'EMI', minWidth: 100 },
+      { id: 'Principal', label: 'Principal', minWidth: 100 },
+      { id: 'balance', label: 'Balance', minWidth: 100 },
+      { id: 'Interest', label: 'Int.', minWidth: 100 },
+      { id: 'Fee/Fine', label: 'Fee Fine', minWidth: 100 },
+      { id: 'onlyInterest', label: 'Only Interest', minWidth: 100 },
+      { id: 'Remarks', label: 'Remarks', minWidth: 100 },
+      { id: 'adminRemarks', label: 'Admin Remarks', minWidth: 100 },
+      { id: 'action', label: 'Action', minWidth: 150 }
+      
+       ];
+  }else{
+     columns = [
+      { id: 'Date', label: 'Date', minWidth: 170 },
+      { id: 'period', label: 'Period', minWidth: 100 },       
+      { id: 'EMI', label: 'EMI', minWidth: 100 },
+      { id: 'Principal', label: 'Principal', minWidth: 100 },
+      { id: 'balance', label: 'Balance', minWidth: 100 },
+      { id: 'Interest', label: 'Int.', minWidth: 100 },
+      { id: 'Fee/Fine', label: 'Fee Fine', minWidth: 100 },
+      { id: 'onlyInterest', label: 'Only Interest', minWidth: 100 },
+      { id: 'Remarks', label: 'Remarks', minWidth: 100 }        
+       ];
+  }
+  const columnsDefault = [
       {
         emi: "month",label:"Mon", minWidth: 70 
       },
@@ -92,14 +109,20 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
         emi:'',
         Principal: '',
         interest:'',
-        Fee:'',
-        onlyInterest:'',
+        Fee:0,
+        onlyInterest:0,
         remarks:'',
         adminRemarks:'',
         adminRemarksCheckbox: false,
         date: '',
         id:''
       });
+
+      const [errors, setErrors] = useState({
+        errFee: "",
+        erronlyInterest: "",
+        submit_error: ""
+    });
 
       const [data, setData] = useState([]);
       const [dataLoan, setDataLoan] = useState([]);
@@ -120,20 +143,57 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
       const handleAddClick = () => {
         // Assuming you have an API endpoint for inserting data
         setIsGridOpen(!isGridOpen);
+        setErrors({ ...errors, submit_error: "" })
         
       };
 
       const handleInputChange = (e) => {
+        
+       
         if (e && e.target) {
           // Handle changes from regular text fields
           const { name, value, type, checked } = e.target;
+          let error = "";
+          switch (name) {
+  
+              case "Fee":
+                
+                  error = regForNumber.test(value)  ? "" : "Please Enter Fee in number ";
+                  setErrors({ ...errors, errFee: error });
+                  break;
+  
+              case "onlyInterest":
+                  error =  regForNumber.test(value) ? "" : "Please Enter Interest in number";
+                  setErrors({ ...errors, erronlyInterest: error });
+                  break;
+  
+              default:
+                  break;
+          }
           setFormData((prevData) => ({
             ...prevData,
             [name]: type === 'checkbox' ? checked : value, // Check if it's a checkbox
           }));
         } else if (e) {
           console.log('Date Picker Event:', e);
+          const { name, value, type, checked } = e.target;
+          let error = "";
+          switch (name) {
   
+              case "Fee":
+                
+                  error = regForNumber.test(value)  ? "" : "Please Enter Fee in number ";
+                  setErrors({ ...errors, errFee: error });
+                  break;
+  
+              case "onlyInterest":
+                  error =  regForNumber.test(value) ? "" : "Please Enter Interest in number";
+                  setErrors({ ...errors, erronlyInterest: error });
+                  break;
+  
+              default:
+                  break;
+          }
           // Extract and set the date based on the actual structure
           // (e.g., if the date is nested, use e.date or e.value or similar)
           setFormData((prevData) => ({
@@ -151,7 +211,15 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
         console.log('Checkbox value:', formData.adminRemarksCheckbox);
         console.log('Checkbox value:', formData);
         formData.loan_id = loan_id;
-
+    
+        if (Object.keys(errors).length == 0) {
+          console.error('Errors found, cannot submit the form');
+          setErrors({ ...errors, submit_error: "Please provide fee and interest in numbers" });
+          return;
+      } else {
+          setErrors({ ...errors, submit_error: "" }); // Reset submit_error when there are no errors
+      }
+    
         // setFormData({
         //   Fee:'',
         //   onlyInterest:'',
@@ -159,57 +227,62 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
         //   adminRemarks:'',
         //   adminRemarksCheckbox: false,
         // });
-      
+    
         await fetch('http://localhost:9000/member/loan/addSingleLoan', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
         })
         .then(response => response.json())
         .then(result => {
-          console.log('API Response', result.payload[0].result);
-          // Clear the form data
-          setFormData({
-            Fee:'',
-            onlyInterest:'',
-            remarks:'',
-            adminRemarks:'',
-            adminRemarksCheckbox: false,
-          });
+            console.log('API Response', result.payload[0].result);
+            // Clear the form data
+            setFormData({
+                Fee:'',
+                onlyInterest:'',
+                remarks:'',
+                adminRemarks:'',
+                adminRemarksCheckbox: false,
+            });
+            setErrors({ ...errors, submit_error: "" });
+            console.log('Submit error after clearing:', errors.submit_error); // Debugging
         })
         .catch(error => {
-          console.error('API Error:', error);
+            console.error('API Error:', error);
         });
-
+    
         // setLoanTransactionDetails(singleLoanDetails);
-      
+    
         await fetch('http://localhost:9000/member/loan/singleLoanDetails', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: loan_id, 
-          }),
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: loan_id, 
+            }),
         })
         .then(response => response.json())
         .then(result => {
-          console.log('API Response:=================================', result.payload[0].result);
-
-          if( result.payload[0].result.length == 0){
-            navigate(`/member/${id}/loan`);
-          }
-          // Set the data received from the API to the state
-          setLoanTransactionDetails(result.payload[0].result);
+            console.log('API Response:=================================', result.payload[0].result);
+    
+            if( result.payload[0].result.length == 0){
+                navigate(`/member/${id}/loan`);
+            }
+            // Set the data received from the API to the state
+            setLoanTransactionDetails(result.payload[0].result);
+            setErrors({ ...errors, submit_error: "" })
         })
         .catch(error => {
-          console.error('API Error:', error);
+            console.error('API Error:', error);
         });
-      
+    
         setIsGridOpen(!isGridOpen);
-      };
+    };
+    
+    
       
       
       
@@ -231,6 +304,7 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
             console.log('API Response sinfle loan detiails', result.payload[0].result);
             // Set the data received from the API to the state
             setDataLoan(result.payload[0].result[0]);
+            setErrors({ ...errors, submit_error: "" })
           })
           .catch(error => {
             console.error('API Error:', error);
@@ -256,10 +330,12 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
                 navigate(`/member/${id}/loan`);
               }
               setLoanTransactionDetails(result.payload[0].result);
+              setErrors({ ...errors, submit_error: "" })
             })
             .catch(error => {
               console.error('API Error:', error);
             });
+            setErrors({ ...errors, submit_error: "" })
       }, [id]);
 
       const generateActionButtons = (row) => (
@@ -307,6 +383,7 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
             navigate(`/member/${id}/loan`);
           }
           setLoanTransactionDetails(result.payload[0].result);
+          setErrors({ ...errors, submit_error: "" })
         })
         .catch(error => {
           console.error('API Error:', error);
@@ -334,7 +411,7 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
           date: row.date, // Set the date from the row object
         }));
         formData.loan_id = loan_id
-      
+        setErrors({ ...errors, submit_error: "" });
         setIsGridOpen(true);
         setEditMode(true);
 
@@ -356,6 +433,7 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
             console.log('API Response', result.payload[0].result);
             // Set the data received from the API to the state
             setData(result.payload[0].result[0]);
+            setErrors({ ...errors, submit_error: "" })
           })
           .catch(error => {
             console.error('API Error:', error);
@@ -385,6 +463,7 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
                 adminRemarks:'',
                 adminRemarksCheckbox: false,
               });
+              setErrors({ ...errors, submit_error: "" });
             })
             .catch(error => {
               console.error('API Error:', error);
@@ -401,6 +480,7 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
 
             setIsGridOpen(false);
             setEditMode(false);
+            setErrors({ ...errors, submit_error: "" })
       }
 
       const navigateToLoanPage = () => {
@@ -459,6 +539,9 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
         {CURRENT_USER != "Normal User" ? <Button variant='contained' sx={{ my: 2 }} onClick={handleAddClick}>Add</Button>:""}
 
         <Button variant='contained' sx={{ my: 2,ml:3 }} onClick={navigateToLoanPage} color="secondary" >Back</Button>
+        {errors.submit_error.length !== 0 && (
+                        <Alert severity="error">{errors.submit_error}</Alert>
+                    )}
         {data && Object.keys(data).length > 0 && (
         <TableContainer component={Paper} sx={{ my: 3,width:"91%" ,marginLeft:"60px"}}  >
       <Table>
@@ -519,6 +602,7 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
                 type="text"
                 name="Fee"
                 value={formData.Fee}
+                helperText={errors.errFee}
                 onChange={handleInputChange}
                 label="Fee"
                 placeholder="Fee"
@@ -529,6 +613,7 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
               <TextField
                 type="text"
                 name="onlyInterest"
+                helperText={errors.erronlyInterest}
                 value={formData.onlyInterest}
                 onChange={handleInputChange}
                 label="Only Interest"
@@ -547,6 +632,7 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
                 sx={{ marginLeft: '8px' }}
               />
             </Grid>
+            {UserToken.isAdmin ?
             <Grid item xs={12} sm={3} sx={{ maxWidth: "16% !important", my: 2 }}>
               <TextField
                 type="text"
@@ -558,6 +644,7 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
                 sx={{ marginLeft: '8px' }}
               />
             </Grid>
+            :""}
 
           </Grid>
           <Grid container spacing={2} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center',ml:4 }}>
@@ -623,9 +710,13 @@ export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
           <td style={{ width: '6%' }}>{ele.interest}</td>
           <td style={{ width: '4%' }}>{ele.fee_fine}</td>
           <td style={{ width: '4%' }}>{ele.only_interest}</td>
+
           <td style={{ width: '100px' }}>{ele.remarks}</td>
+          {UserToken.isAdmin ?
+            <>
           <td style={{ width: '100px' }}>{ele.admin_remarks}</td>
           <td style={{ width: '90px' }}>{generateActionButtons(ele)}</td>
+          </> :""}
         </tr>
       ))}
     </tbody>

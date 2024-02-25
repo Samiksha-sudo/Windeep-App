@@ -31,12 +31,15 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { useSelector } from 'react-redux';
 // import {memberLoan} from "../../utils/database/data"
 
 export default function SingleMemberLoan({ CURRENT_USER, USER_TYPES }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
+  const UserToken = useSelector((state) => state.loggedInUserReducer);
+
   console.log(id);
 
   const [state, setState] = useState({
@@ -54,6 +57,8 @@ export default function SingleMemberLoan({ CURRENT_USER, USER_TYPES }) {
     totalLoan: "",
     unit: "months",
   });
+
+
 
   const [data, setData] = useState([]);
 
@@ -252,7 +257,7 @@ export default function SingleMemberLoan({ CURRENT_USER, USER_TYPES }) {
 
   return (
     <>
-      {CURRENT_USER != "Normal User" ? (
+      {UserToken.isAdmin ? (
         <Button
           variant="contained"
           sx={{ marginLeft: 3 }}
@@ -420,7 +425,7 @@ export default function SingleMemberLoan({ CURRENT_USER, USER_TYPES }) {
                         Total Loan : ₹ {ele.total_loan}
                       </Typography>
                       <Typography sx={{ mb: 1 }}>
-                        Interest : ₹ {ele.interest}
+                        Total Interest : ₹ {ele.interest}
                       </Typography>
                       <Typography sx={{ mb: 1 }}>
                         Period : {ele.period} {ele.unit}

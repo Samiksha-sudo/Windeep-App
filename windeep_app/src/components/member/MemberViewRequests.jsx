@@ -11,7 +11,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 import EditIcon from "@mui/icons-material/Edit";
-export default function ViewRequests() {
+export default function MemberViewRequests() {
   const { id } = useParams();
   console.log(id);
 
@@ -29,15 +29,16 @@ const [page, setPage] = useState({Pending:0,Reject:0,Complete:0});
 const [rowsPerPage, setRowsPerPage] = useState({Pending:10,Reject:10,Complete:10});
 
 useEffect(() => {
-  let resp = []
-  // setViewRequests(memberDetails);
-  fetch('http://localhost:9000/member/requestLoan', {
+    // Clear existing data
+    setViewRequests({ Pending: [], Reject: [], Complete: [] });
+  
+    fetch('http://localhost:9000/member/requestLoan/viewRequests', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        id:UserToken.member_id  
+        id: id,
       })
     })
       .then(response => response.json())
@@ -53,14 +54,15 @@ useEffect(() => {
           }
           return acc;
         }, { Pending: [], Reject: [], Complete: [] });
-        
+  
         setViewRequests(categorizedData);
       })
       .catch(error => {
         console.error('API Error:', error);
       });
-     
-}, []);
+  
+  }, [id, page, rowsPerPage]);
+  
 
 const columns = [
   { id: "amount", label: "Amount: ₹", minWidth: 170 },
@@ -74,7 +76,6 @@ const columns = [
   { id: "ProcessingFee", label: "Processing Fee", minWidth: 100 },
   { id: "Reason", label: "Reason", minWidth: 100 },
   { id: "RaisedBy", label: "Raised By", minWidth: 100 },
-  { id: "Action", label: "Action", minWidth: 100 }
 ];
 
 const columnsAccepted = [
@@ -116,113 +117,9 @@ const handleChangeRowsPerPage = (event,key) => {
   setPage({...page,[key]:0});
 };
 
-const handleAccept = async(row) => {
-  console.log("row",row)
-  await fetch('http://localhost:9000/member/requestLoan/accept', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id:row.viewRequestsId,
-        status:"accept"
-      })
-    })
-      .then(response => response.json())
-      .then(result => {
-        console.log('API Response: ', result.payload[0].result);
-        
-      })
-      .catch(error => {
-        console.error('API Error:', error);
-      });
-      await fetch('http://localhost:9000/member/requestLoan', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id:UserToken.member_id   
-      })
-    })
-      .then(response => response.json())
-      .then(result => {
-        console.log('API Response: ', result.payload[0].result);
-        const categorizedData = result.payload[0].result.reduce((acc, curr) => {
-          if (curr.status === "Reject") {
-            acc.Reject.push(curr);
-          } else if (curr.status === "Complete") {
-            acc.Complete.push(curr);
-          } else if (curr.status === "Pending") {
-            acc.Pending.push(curr);
-          }
-          return acc;
-        }, { Pending: [], Reject: [], Complete: [] });
-        
-        setViewRequests(categorizedData);
-      })
-      .catch(error => {
-        console.error('API Error:', error);
-      });
-};
-const handleReject = async (row) => {
-  await fetch('http://localhost:9000/member/requestLoan/accept', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id:row.viewRequestsId,
-        status:"reject"
-      })
-    })
-      .then(response => response.json())
-      .then(result => {
-        console.log('API Response: ', result.payload[0].result);
-        
-      })
-      .catch(error => {
-        console.error('API Error:', error);
-      });
-      await fetch('http://localhost:9000/member/requestLoan', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id:UserToken.member_id   
-      })
-    })
-      .then(response => response.json())
-      .then(result => {
-        console.log('API Response: ', result.payload[0].result);
-        const categorizedData = result.payload[0].result.reduce((acc, curr) => {
-          if (curr.status === "Reject") {
-            acc.Reject.push(curr);
-          } else if (curr.status === "Complete") {
-            acc.Complete.push(curr);
-          } else if (curr.status === "Pending") {
-            acc.Pending.push(curr);
-          }
-          return acc;
-        }, { Pending: [], Reject: [], Complete: [] });
-        
-        setViewRequests(categorizedData);
-      })
-      .catch(error => {
-        console.error('API Error:', error);
-      });
-};
-const generateActionButtons = (row) => (
-  <>
-    <IconButton color="success" onClick={() => handleAccept(row)}>
-    <CheckCircleIcon />
-    </IconButton>
-    <IconButton color="error" variant = "contained" onClick={() => handleReject(row)}>
-    <CancelIcon />
-    </IconButton>
-  </>
-);
+
+
+
 
     return (
         <>
@@ -250,7 +147,6 @@ const generateActionButtons = (row) => (
             <td>{fle.processing_fee}</td>
             <td>{fle.admin_reason}</td>
             <td>{fle.member_name}</td>
-            <td>{generateActionButtons(fle)}</td>
           </tr>
         ))
       ) : (

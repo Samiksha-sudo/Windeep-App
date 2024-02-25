@@ -22,36 +22,70 @@ import {
 
 // import {adminLoginHome} from "../../utils/database/data"
 
-export default function Member({CURRENT_USER,USER_TYPES}) {
+export default function Member() {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
+  const [totalAccountData, setTotalAccountData] = useState([]);
+  const [formData, setFormData] = useState({
+    search: "",
+    accountbalance:0,
+    isEditing:false,
+    totalEmi:0,
+    totalShares:0,
+    projectedAmount:0,
+    totalLoan:0
+  });
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
-    // Make the API request when the component mounts
-    
-    // setData(adminLoginHome)
-    fetch('http://localhost:9000/admin/login/home', {
-      method: 'GET',
+    const limit = rowsPerPage;
+    const offset = page * rowsPerPage;
+  
+    // Reset data before fetching new data
+    setData([]);
+  
+    fetch('http://localhost:9000/member/listMembers', {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-    })
-      .then(response => response.json())
-      .then(result => {
-        console.log('API Response:', result.payload[0].result);
-        // Set the data received from the API to the state
-        setData(result.payload[0].result);
+      body: JSON.stringify({
+        search: formData.search,
+        limit: limit,
+        offset: offset
       })
-      .catch(error => {
-        console.error('API Error:', error);
-      });
-  }, [])
+    })
+    .then(response => response.json())
+    .then(result => {
+      console.log('API Response:', result.payload[0].members);
+      setData(result.payload[0].members);
+      setTotalCount(result.payload[0].count);
+    })
+    .catch(error => {
+      console.error('API Error:', error);
+    });
 
-  console.log("CURRENT_USER",CURRENT_USER)
+
+  }, [page, rowsPerPage, formData.search]);
+  
+
+
 
   const handleRowClick = (id) => {
     navigate(`${id}/pages`);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const columns = [
@@ -68,7 +102,7 @@ export default function Member({CURRENT_USER,USER_TYPES}) {
     { id: "total_interest", label: "Total Interest", minWidth: 100 },
     { id: "amount_recivable", label: "Amount Recievable", minWidth: 100 },
     { id: "amount_recivied", label: "Amount Recieved", minWidth: 100 },
-  ];
+  ]; 
 
   const rows = [
     {
@@ -162,6 +196,32 @@ export default function Member({CURRENT_USER,USER_TYPES}) {
       amount_recivied: "1,0000",
     },
   ];
+  const handleClick = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      isEditing: true,
+    }));
+    
+  };
+  
+  const handleInputChange = (e) => {
+    // Handle changes from regular text fields
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+
+  };
+  
+  const handleBlur = () => {
+    
+    setFormData((prevData) => ({
+      ...prevData,
+      isEditing: false,
+    }));
+  };
+
 
 
   return (
@@ -173,7 +233,9 @@ export default function Member({CURRENT_USER,USER_TYPES}) {
             className="form-control search_member"
             id="cdb-autocomplete"
             placeholder="Search"
-            name="q"
+            name="totalLoan"
+            value={formData.search}
+            onChange={handleInputChange}
           />
         </div>
 
@@ -199,10 +261,21 @@ export default function Member({CURRENT_USER,USER_TYPES}) {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                  <TableCell align="center" colSpan={2}>
-                    100000 Rs
+                <TableCell align="center" colSpan={2} onClick={handleClick}>
+                    {formData.isEditing ? (
+                      <input
+                        className='mt-2 accountBalance'
+                        type="text"
+                        name="accountbalance"
+                        value={formData.accountbalance}
+                        onChange={handleInputChange}
+                        onBlur={handleBlur}
+                        placeholder='AccountBalance'
+                      />
+                    ) : (
+                      formData.accountbalance
+                    )}
                   </TableCell>
-
                   <TableCell align="center" colSpan={3}>
                     100000 Rs
                   </TableCell>
@@ -241,21 +314,21 @@ export default function Member({CURRENT_USER,USER_TYPES}) {
               >
                 <td>
                   <img
-                    src={`${ele.image}`}
+                    src={`${image1}`}
                     className="profile_img"
                     alt="user image"
                   />
                 </td>
                 <td>{ele.name}</td>
                 <td>{ele.member_id}</td>
-                <td>{ele.loan_dist_date}</td>
-                <td>{ele.loan_close_date}</td>
-                <td>{ele.loan_amount}</td>
+                <td>{ele.start_date}</td>
+                <td>{ele.end_date}</td>
+                <td>{ele.total_loan}</td>
                 <td>{ele.processing_fee}</td>
                 <td>{ele.amt_disbursed}</td>
-                <td>{ele.tenure}</td>
+                <td>{ele.period} {ele.unit} </td>
                 <td>{ele.emi}</td>
-                <td>{ele.total_interest}</td>
+                <td>{ele.interest}</td>
                 <td>{ele.amount_recivable}</td>
                 <td>{ele.amount_recivied}</td>
               </tr>
@@ -263,6 +336,16 @@ export default function Member({CURRENT_USER,USER_TYPES}) {
           </tbody>
         </table>
       </Paper>
+
+      {data.length ?         <TablePagination
+      component="div"
+      count={totalCount}
+      page={page}
+      onPageChange={handleChangePage}
+      rowsPerPage={rowsPerPage}
+      rowsPerPageOptions={[10, 20, 30, 40, 50]}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+    />:""}
 
     </>
   );

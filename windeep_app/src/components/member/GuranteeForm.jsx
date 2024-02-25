@@ -259,328 +259,68 @@ export default function GuranteeForm({ CURRENT_USER, USER_TYPES }) {
       </List>
     </Box>
   );
+  
+  const downloadSampleWord = async () => {
+    try {
+      // Fetch the sample word file link from the backend
+      const response = await fetch('http://localhost:9000/member/downloadLink', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      // Parse the response JSON
+      const result = await response.json();
+      console.log('API Response:', result.payload[0]);
+      let downloadUrl = result.payload[0].link
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.setAttribute('download', '');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+  
+      
+    } catch (error) {
+      console.error('API Error:', error);
+    }
+  };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    
+    console.log('Selected file:', file);
+};
+
 
   return (
     <>
-      <Container>
-        <div className={styles.registration}>
-          <h3>Member Info</h3>
-          <FormControl sx={{ my: 2 }} fullWidth>
-            <TextField
-              helperText={errors.errname}
-              sx={mystyles}
-              name="name"
-              value={registerCredentials.name}
-              label="Name"
-              size="small"
-              onChange={handleInputChange}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment>
-                    <BorderColorTwoToneIcon color="info" />
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-              color="info"
-            />
-          </FormControl>
-          <FormControl sx={{ my: 2 }} fullWidth>
-            <TextField
-              helperText={errors.erramount}
-              sx={mystyles}
-              name="amount"
-              value={registerCredentials.amount}
-              label="Amount"
-              size="small"
-              onChange={handleInputChange}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment>
-                    <BorderColorTwoToneIcon color="info" />
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-              color="info"
-            />
-          </FormControl>
+            <>
 
-          <h3>Guarantor Information 1 </h3>
-          <FormControl sx={{ my: 2 }} fullWidth>
-            <TextField
-              helperText={errors.errname}
-              sx={mystyles}
-              name="name"
-              value={registerCredentials.name}
-              label="Name"
-              size="small"
-              onChange={handleInputChange}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment>
-                    <BorderColorTwoToneIcon color="info" />
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-              color="info"
+<div className={styles.footer}>
+                <Button onClick={downloadSampleWord} className={styles.button} variant="contained">Download Sample Gurantor Document</Button>
+            </div>
+            <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+            <input
+                accept=".docx"
+                style={{ display: 'none' }}
+                id="contained-button-file"
+                multiple
+                type="file"
+                onChange={handleFileUpload}
             />
-          </FormControl>
-          <FormControl sx={{ my: 2 }} fullWidth>
-            <TextField
-              helperText={errors.errname}
-              sx={mystyles}
-              name="email"
-              value={registerCredentials.name}
-              label="Email"
-              size="small"
-              onChange={handleInputChange}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment>
-                    <BorderColorTwoToneIcon color="info" />
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-              color="info"
-            />
-          </FormControl>
-          <FormControl sx={{ my: 2 }} fullWidth>
-            <TextField
-              helperText={errors.errage}
-              sx={mystyles}
-              name="age"
-              value={registerCredentials.age}
-              label="Age"
-              size="small"
-              onChange={handleInputChange}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment>
-                    <BorderColorTwoToneIcon color="info" />
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-              color="info"
-            />
-          </FormControl>
-          <FormControl sx={{ my: 2 }} fullWidth>
-            <Grid container spacing={2}>
-              <Grid item>
-                <TextField
-                  helperText={errors.erroccupation}
-                  sx={mystyles}
-                  name="occupation"
-                  value={registerCredentials.occupation}
-                  label="Occupation"
-                  size="small"
-                  onChange={handleInputChange}
-                  variant="outlined"
-                  color="info"
-                />
-              </Grid>
-              <Grid item>
-                <FormControl fullWidth>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={["DatePicker"]}>
-                      <DatePicker label="Date" />
-                    </DemoContainer>
-                  </LocalizationProvider>
-                </FormControl>
-              </Grid>
-            </Grid>
-          </FormControl>
+            <label htmlFor="contained-button-file">
+                <Button variant="contained" component="span">
+                    Upload Gurantor Form
+                </Button>
+            </label>
 
-          <FormControl sx={{ my: 2 }} fullWidth>
-            <Grid container spacing={2}>
-              <Grid item className="text-center">
-                <label htmlFor="Photo" style={{ marginBottom: "10px" }}>
-                  Photo
-                </label>
-                <input
-                  id="photo"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{ marginBottom: "20px" }}
-                />
-                {selectedImage && (
-                  <div>
-                    <img
-                      src={selectedImage}
-                      alt="Selected Image"
-                      style={{
-                        maxWidth: "100%",
-                        maxHeight: "400px",
-                        marginBottom: "20px",
-                      }}
-                    />
-                  </div>
-                )}
-              </Grid>
-              <Grid item className="text-center">
-                <label htmlFor="Sign" style={{ marginBottom: "10px" }}>
-                  Sign
-                </label>
-                <input
-                  id="photo"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{ marginBottom: "20px" }}
-                />
-                {selectedImage && (
-                  <div>
-                    <img
-                      src={selectedImage}
-                      alt="Selected Image"
-                      style={{
-                        maxWidth: "100%",
-                        maxHeight: "400px",
-                        marginBottom: "20px",
-                      }}
-                    />
-                  </div>
-                )}
-              </Grid>
-            </Grid>
-          </FormControl>
+        </Paper>
+        <br/>
 
-          <h3>Guarantor Information 2 </h3>
-          <FormControl sx={{ my: 2 }} fullWidth>
-            <TextField
-              helperText={errors.errname}
-              sx={mystyles}
-              name="name"
-              value={registerCredentials.name}
-              label="Name"
-              size="small"
-              onChange={handleInputChange}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment>
-                    <BorderColorTwoToneIcon color="info" />
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-              color="info"
-            />
-          </FormControl>
-          <FormControl sx={{ my: 2 }} fullWidth>
-            <TextField
-              helperText={errors.errage}
-              sx={mystyles}
-              name="age"
-              value={registerCredentials.age}
-              label="Age"
-              size="small"
-              onChange={handleInputChange}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment>
-                    <BorderColorTwoToneIcon color="info" />
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-              color="info"
-            />
-          </FormControl>
-          <FormControl sx={{ my: 2 }} fullWidth>
-            <Grid container spacing={2}>
-              <Grid item>
-                <TextField
-                  helperText={errors.erroccupation}
-                  sx={mystyles}
-                  name="occupation"
-                  value={registerCredentials.occupation}
-                  label="Occupation"
-                  size="small"
-                  onChange={handleInputChange}
-                  variant="outlined"
-                  color="info"
-                />
-              </Grid>
-              <Grid item>
-                <FormControl fullWidth>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={["DatePicker"]}>
-                      <DatePicker label="Date" />
-                    </DemoContainer>
-                  </LocalizationProvider>
-                </FormControl>
-              </Grid>
-            </Grid>
-          </FormControl>
-
-          <FormControl sx={{ my: 2 }} fullWidth>
-            <Grid container spacing={2}>
-              <Grid item className="text-center">
-                <label htmlFor="Photo" style={{ marginBottom: "10px" }}>
-                  Photo
-                </label>
-                <input
-                  id="photo"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{ marginBottom: "20px" }}
-                />
-                {selectedImage && (
-                  <div>
-                    <img
-                      src={selectedImage}
-                      alt="Selected Image"
-                      style={{
-                        maxWidth: "100%",
-                        maxHeight: "400px",
-                        marginBottom: "20px",
-                      }}
-                    />
-                  </div>
-                )}
-              </Grid>
-              <Grid item className="text-center">
-                <label htmlFor="Sign" style={{ marginBottom: "10px" }}>
-                  Sign
-                </label>
-                <input
-                  id="photo"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{ marginBottom: "20px" }}
-                />
-                {selectedImage && (
-                  <div>
-                    <img
-                      src={selectedImage}
-                      alt="Selected Image"
-                      style={{
-                        maxWidth: "100%",
-                        maxHeight: "400px",
-                        marginBottom: "20px",
-                      }}
-                    />
-                  </div>
-                )}
-              </Grid>
-            </Grid>
-          </FormControl>
-
-          <Button
-            variant="contained"
-            color="success"
-            className={styles.button_fun}
-          >
-            Submit
-          </Button>
-        </div>
-      </Container>
+<Button variant='contained' color='success'>Send</Button>
+          </>
     </>
   );
 }

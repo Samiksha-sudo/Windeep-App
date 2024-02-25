@@ -157,8 +157,11 @@ memberTransactionsRouter.post("/add", async (req, res) => {
 memberTransactionsRouter.post("/editSingleLoan", async (req, res) => {
     try {
         console.log("request body in editSingleLoan", req.body);
-        let query = ` UPDATE loan_transaction_details SET fee_fine = "${req.body.Fee}", 
-        only_interest = "${req.body.onlyInterest}",remarks = "${req.body.remarks}",admin_remarks = "${req.body.adminRemarks}"
+        let query = ` UPDATE loan_transaction_details SET 
+        fee_fine = ${req.body.Fee ? `'${req.body.Fee}'` : 'null'}, 
+        only_interest =  ${req.body.onlyInterest ? `'${req.body.onlyInterest}'` : 'null'},
+        remarks = ${req.body.remarks ? `'${req.body.remarks}'` : 'null'},
+        admin_remarks =  ${req.body.adminRemarks ? `'${req.body.adminRemarks}'` : 'null'}
         where id = ${req.body.id} and loan_id = ${req.body.loan_id};`;
         let result = await sequelize.query(query, { type: QueryTypes.UPDATE });
         console.log("query line 15", JSON.stringify(query));

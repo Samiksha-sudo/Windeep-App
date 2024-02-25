@@ -6,9 +6,11 @@ import {jwtDecode} from 'jwt-decode';
 import './Login.css';
 import { AdminLogin,MemberLogin } from '../../config/LoginService'
 import { setStoreState } from '../../store/shared';
+import { useSelector } from 'react-redux';
 export default function Login({USER}) { 
     console.log("user",USER);
     const navigate = useNavigate();
+    
 
     const regForName = RegExp(/^[A-Za-z]{3,30}$/);
 const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})");
@@ -61,7 +63,6 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
                             password: registerCredentials.password,
                         })
                         .then(res=>{
-                            console.log("datatattatat------------------->",res)
                             let decode = jwtDecode(res.data.payload[0].token)
                             setStoreState("USER_LOGIN",decode)
                             localStorage.setItem("_token", res.data.payload[0].token);
@@ -92,16 +93,25 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
                             password: registerCredentials.password,
                         })
                         .then(res=>{
+
                                 localStorage.setItem("_token", res.data.payload[0].token);
                                 let decode = jwtDecode(res.data.payload[0].token)
+                                setStoreState("USER_LOGIN",decode)
                                 console.log("datatattatat",decode)
                                 navigate("/")
-                        })
+                        }).catch(err=>{
+                            console.log("error ",err)
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'MemberId or Password does not match!',
+                            })
+                        })  
                     }else{
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
-                            text: 'Email or Password does not match!',
+                            text: 'MemberId or Password does not match!',
                         })
                     }
                 }

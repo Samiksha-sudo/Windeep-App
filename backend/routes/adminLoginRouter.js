@@ -12,7 +12,7 @@ adminLoginRouter.post("/", async (req, res) => {
     try {
         let hashbcrypt = false;
         console.log("request body in login", req.body);
-        let query1 = `SELECT admin_id, email, password FROM admin_details WHERE is_deleted = 0 and email = "${req.body.email}";`;
+        let query1 = `SELECT admin_id, email, password,name,member_id FROM admin_details WHERE is_deleted = 0 and email = "${req.body.email}";`;
         let result1 = await sequelize.query(query1, { type: QueryTypes.SELECT });
         
         console.log("result line 16-->", JSON.stringify(result1));
@@ -56,19 +56,25 @@ adminLoginRouter.post("/member", async (req, res) => {
 
         result1.forEach(ele => {
             hashbcrypt = bcrypt.compareSync(req.body.password, ele.password);
+            console.log("loginSuccess",loginSuccess)
             if (hashbcrypt) {
+               
                 ele.isAdmin = false;
                 console.log(ele)
                 const token = encryptData(ele);
-                console.log("token", token)
+                console.log("token", token);
+                
+
                 res.json({ payload: [{ member_id: ele.member_id, token }], message: "Admin Logged In successfully", error: "" });
-                loginSuccess = true; // Set the flag to true
+                loginSuccess = true; 
+            }else{
+                loginSuccess = false;
             }
         });
         
         // Send response outside the loop
-        if (!loginSuccess && result1.length < 0) {
-            res.status(401).json({ payload: [{ member_id: null }], message: "", error: "Invalid email or password" });
+        if (!loginSuccess || result1.length < 0) {
+            res.json({payload: [{ member_id: null }], err: 0, msg:"Invalid email or password" });;
         }
     } catch (error) {   
         console.error("Error in admin login:", error);
@@ -108,7 +114,7 @@ adminLoginRouter.get("/member/login", async (req, res) => {
         if (result.length > 0) {
             res.json({ payload:[{ result: result}],message:"Admin Logged In successfully",error:"" });
         } else {
-            res.status(401).json({payload:[{ admin_id: null}],message:"", error: "Invalid email or password" });
+            res.json({ err: 0, msg:"Invalid email or password" });
         }
     } catch (error) {   
         console.error("Error in admin login:", error);

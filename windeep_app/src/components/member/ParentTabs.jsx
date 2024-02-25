@@ -39,12 +39,15 @@ import LoanRequestForm from "./LoanRequestForm";
 import LoanForm from "./LoanForm";
 import GuranteeForm from "./GuranteeForm";
 import ViewRequests from "./ViewRequests";
-
-
-export default function ParentTabs({CURRENT_USER,USER_TYPES}) {
+import { useSelector } from 'react-redux';
+import { useParams, useLocation } from "react-router-dom";
+import MemberViewRequests from "./MemberViewRequests";
+export default function ParentTabs() {
   const navigate = useNavigate();
   const [value, setValue] = useState(0);
-
+  const UserToken = useSelector((state) => state.loggedInUserReducer);
+  const [ProfileData, setProfileData] = useState({});
+  const { id } = useParams();
   const [anchorToggle, setAnchorToggle] = useState(false);
 
   const handleChange = (e,newValue) => {
@@ -52,8 +55,25 @@ export default function ParentTabs({CURRENT_USER,USER_TYPES}) {
   };
 
   useEffect(() => {
- 
-  }, [])
+    fetch('http://localhost:9000/member/listSingleMember', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id:id   
+        })
+      })
+        .then(response => response.json())
+        .then(result => {
+          console.log('API Response: ', result.payload[0].result);
+          setProfileData(result.payload[0].result)
+        })
+        .catch(error => {
+          console.error('API Error:', error);
+        });
+       
+  }, []);
 
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -92,41 +112,35 @@ export default function ParentTabs({CURRENT_USER,USER_TYPES}) {
     setAnchorToggle(open);
   };
 
-  const profileData = [
-    {
-      image: image1,
-      Name: "Ganesh Khenat",
-      Mobile: 9518354701,
-      Email: "ganeshkhenat@gmail.com",
-      "Date of Birth": "12-06-2023",
-      "Aadhar Card": "202592951240",
-      "Pan card": "ABCD00002",
-      "IFSC code": "HDFC12345",
-    },
-  ];
-
-  const list = () => (
-    <Box
-      sx={{ width: 350 }}
-      role="presentation"
-      onClick={(e)=>toggleDrawer(e,false)}
-      onKeyDown={(e)=>toggleDrawer(e,false)}
-    >
-      <List>
-        {Object.entries(profileData[0]).map(([key, value], index) => (
-          <ListItem key={index} disablePadding>
-            <ListItemButton>
-              {key === "image" ? (
-                <img src={value} alt="Profile" className="profile_img" />
-              ) : (
-                <ListItemText primary={`${key} : ${value}`} />
-              )}
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
+  const list = () => {
+    if (!ProfileData || !ProfileData[0]) {
+      return null; 
+    }
+  
+    return (
+      <Box
+        sx={{ width: 350 }}
+        role="presentation"
+        onClick={(e)=>toggleDrawer(e,false)}
+        onKeyDown={(e)=>toggleDrawer(e,false)}
+      >
+        <List>
+          {Object.entries(ProfileData[0]).map(([key, value], index) => (
+            <ListItem key={index} disablePadding>
+              <ListItemButton>
+                {key === "image" ? (
+                  <img src={value} alt="Profile" className="profile_img" />
+                ) : (
+                  <ListItemText primary={`${key} : ${value}`} />
+                )}
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+    );
+  };
+  
 
   return (
     <>
@@ -191,7 +205,7 @@ export default function ParentTabs({CURRENT_USER,USER_TYPES}) {
           <LoanRequestForm/>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={4}>
-          <ViewRequests/>
+          <MemberViewRequests/>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={5}>
           <LoanForm/>
