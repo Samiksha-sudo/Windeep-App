@@ -112,7 +112,7 @@ const [errors, setErrors] = useState({
       };
       const detailLoan = () =>{
         setDetail(true)
-      }
+      } 
 
     // For Validation
     const handleInputChange = (event) => {

@@ -135,7 +135,7 @@ memberRoutes.post("/registerMember", async (req, res) => {
 
 memberRoutes.post("/listMembers", async (req, res) => {
 
-  let query = `select md.name,md.member_id,lt.start_date,lt.end_date,lt.total_loan,lt.processing_fee,lt.period,lt.unit,lt.interest
+  let query = `select md.name,md.member_id,lt.start_date,lt.end_date,lt.total_loan,lt.processing_fee,lt.period,lt.unit,lt.interest,lt.total_repayment,lt.monthly_emi as emi
   from member_details md left join loan_transactions lt on lt.member_id = md.member_id 
   where (md.name LIKE '%${req.body.search}%' OR md.member_id LIKE '%${req.body.search}%')and
   md.is_deleted = 0 limit ${req.body.limit} offset ${req.body.offset};`;
@@ -217,6 +217,55 @@ memberRoutes.post("/listSingleMember", async (req, res) => {
 
 
   res.json({ err: 1, msg: "Member Listed successfully", payload:[{ result}] 
+  });
+
+
+});
+
+memberRoutes.post("/listAndCalculateAccount", async (req, res) => {
+
+  if(req.body.projectedAmount){
+    let query = `UPDATE loan_master  SET projected_amount =  ${req.body.projectedAmount ? `'${req.body.projectedAmount}'` : 'null'}  where is_deleted = 0; `;
+    let result = await sequelize.query(query, { type: QueryTypes.UPDATE });
+  
+    console.log("query line 230", JSON.stringify(query));
+    console.log("result line 231-->", JSON.stringify(result)); 
+  }
+
+  let query = `SELECT projected_amount FROM windeep_finance.loan_master where is_deleted = 0; `;
+  let result = await sequelize.query(query, { type: QueryTypes.SELECT });
+
+  console.log("query line 230", JSON.stringify(query));
+  console.log("result line 231-->", JSON.stringify(result));
+
+  let query1 = `SELECT SUM(emi) as total_emi from loan_transaction_details where is_deleted = 0;`;
+  let result1 = await sequelize.query(query1, { type: QueryTypes.SELECT });
+
+  console.log("query line 236", JSON.stringify(query1));
+  console.log("result line 237-->", JSON.stringify(result1));
+
+  let query2 = `SELECT SUM(total_contribution) as total_shares FROM windeep_finance.shares where is_deleted = 0 `;
+  let result2 = await sequelize.query(query2, { type: QueryTypes.SELECT });
+
+  console.log("query line 242", JSON.stringify(query2));
+  console.log("result line 243-->", JSON.stringify(result2));
+
+  let query3 = `SELECT COUNT(*) as total_loan FROM windeep_finance.loan_transactions`;
+  let result3 = await sequelize.query(query3, { type: QueryTypes.SELECT });
+
+  console.log("query line 242", JSON.stringify(query3));
+  console.log("result line 243-->", JSON.stringify(result3));
+
+  let resultdata = {
+    projectedAmount : result[0].projected_amount,
+    totalEmi : result1[0].total_emi,
+    totalShares : result2[0].total_shares,
+    totalLoan : result3[0].total_loan
+
+  }
+  console.log("ResultData",resultdata)
+
+  res.json({ err: 1, msg: "Member Listed successfully", payload:[{ resultdata}] 
   });
 
 

@@ -26,20 +26,20 @@ export default function Member() {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
-  const [totalAccountData, setTotalAccountData] = useState([]);
+
+
+  const [totalLoanData, setTotalLoanData] = useState([]);
   const [formData, setFormData] = useState({
     search: "",
-    accountbalance:0,
+    projectedAmount: 0,
     isEditing:false,
-    totalEmi:0,
-    totalShares:0,
-    projectedAmount:0,
-    totalLoan:0
   });
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
+
+
 
   useEffect(() => {
     const limit = rowsPerPage;
@@ -64,6 +64,24 @@ export default function Member() {
       console.log('API Response:', result.payload[0].members);
       setData(result.payload[0].members);
       setTotalCount(result.payload[0].count);
+    })
+    .catch(error => {
+      console.error('API Error:', error);
+    });
+
+    fetch('http://localhost:9000/member/listAndCalculateAccount', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        projectedAmount: formData.projectedAmount
+      })
+    })
+    .then(response => response.json())
+    .then(result => {
+      console.log('API Response:', result.payload[0].resultdata);
+      setTotalLoanData(result.payload[0].resultdata);
     })
     .catch(error => {
       console.error('API Error:', error);
@@ -96,7 +114,6 @@ export default function Member() {
     { id: "loan_close_date", label: "Loan Close Date", minWidth: 100 },
     { id: "loan_amount", label: "Loan Amount", minWidth: 100 },
     { id: "processing_fee", label: "Processing Fee", minWidth: 100 },
-    { id: "amt_disbursed", label: "Amount Disbursed", minWidth: 100 },
     { id: "tenure", label: "Tenure", minWidth: 100 },
     { id: "emi", label: "EMI", minWidth: 100 },
     { id: "total_interest", label: "Total Interest", minWidth: 100 },
@@ -104,98 +121,6 @@ export default function Member() {
     { id: "amount_recivied", label: "Amount Recieved", minWidth: 100 },
   ]; 
 
-  const rows = [
-    {
-      image: image1,
-      name: "Ganesh khenat",
-      member_id : "MEMB00009WD",
-      loan_dist_date: "12-12-2021",
-      loan_close_date: "10-12-2023",
-      loan_amount: " 1,00,000.00",
-      processing_fee: " 1,500.00",
-      amt_disbursed: "2,95,500.00",
-      tenure: 24,
-      emi: "4,387.14",
-      total_interest: "5272.00",
-      amount_recivable: "1,000",
-      amount_recivied: "1,0000",
-    },
-    {
-      image: image1,
-      name: "Ganesh khenat",
-      member_id : "MEMB00009WD",
-      loan_dist_date: "12-12-2021",
-      loan_close_date: "10-12-2023",
-      loan_amount: " 1,00,000.00",
-      processing_fee: " 1,500.00",
-      amt_disbursed: "2,95,500.00",
-      tenure: 24,
-      emi: "4,387.14",
-      total_interest: "5272.00",
-      amount_recivable: "1,000",
-      amount_recivied: "1,0000",
-    },
-    {
-      image: image1,
-      name: "Ganesh khenat",
-      member_id : "MEMB00009WD",
-      loan_dist_date: "12-12-2021",
-      loan_close_date: "10-12-2023",
-      loan_amount: " 1,00,000.00",
-      processing_fee: " 1,500.00",
-      amt_disbursed: "2,95,500.00",
-      tenure: 24,
-      emi: "4,387.14",
-      total_interest: "5272.00",
-      amount_recivable: "1,000",
-      amount_recivied: "1,0000",
-    },
-    {
-      image: image1,
-      name: "Ganesh khenat",
-      member_id : "MEMB00009WD",
-      loan_dist_date: "12-12-2021",
-      loan_close_date: "10-12-2023",
-      loan_amount: " 1,00,000.00",
-      processing_fee: " 1,500.00",
-      amt_disbursed: "2,95,500.00",
-      tenure: 24,
-      emi: "4,387.14",
-      total_interest: "5272.00",
-      amount_recivable: "1,000",
-      amount_recivied: "1,0000",
-    },
-    {
-      image: image1,
-      name: "Ganesh khenat",
-      member_id : "MEMB00009WD",
-      loan_dist_date: "12-12-2021",
-      loan_close_date: "10-12-2023",
-      loan_amount: " 1,00,000.00",
-      processing_fee: " 1,500.00",
-      amt_disbursed: "2,95,500.00",
-      tenure: 24,
-      emi: "4,387.14",
-      total_interest: "5272.00",
-      amount_recivable: "1,000",
-      amount_recivied: "1,0000",
-    },
-    {
-      image: image1,
-      name: "Ganesh khenat",
-      member_id : "MEMB00009WD",
-      loan_dist_date: "12-12-2021",
-      loan_close_date: "10-12-2023",
-      loan_amount: " 1,00,000.00",
-      processing_fee: " 1,500.00",
-      amt_disbursed: "2,95,500.00",
-      tenure: 24,
-      emi: "4,387.14",
-      total_interest: "5272.00",
-      amount_recivable: "1,000",
-      amount_recivied: "1,0000",
-    },
-  ];
   const handleClick = () => {
     setFormData((prevData) => ({
       ...prevData,
@@ -205,23 +130,39 @@ export default function Member() {
   };
   
   const handleInputChange = (e) => {
-    // Handle changes from regular text fields
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-
   };
   
-  const handleBlur = () => {
-    
+  
+  const handleBlur = async() => {
+    await fetch('http://localhost:9000/member/listAndCalculateAccount', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      projectedAmount: formData.projectedAmount
+    })
+  })
+  .then(response => response.json())
+  .then(result => {
+    console.log('API Response:', result);
+    // Update state with the new projected amount if necessary
+    // Ensure that result.payload[0].resultdata contains the updated value
+    setTotalLoanData(result.payload[0].resultdata);
+  })
+  .catch(error => {
+    console.error('API Error:', error);
+  });
     setFormData((prevData) => ({
       ...prevData,
       isEditing: false,
     }));
   };
-
 
 
   return (
@@ -261,33 +202,33 @@ export default function Member() {
                   </TableCell>
                 </TableRow>
                 <TableRow>
-                <TableCell align="center" colSpan={2} onClick={handleClick}>
-                    {formData.isEditing ? (
-                      <input
-                        className='mt-2 accountBalance'
-                        type="text"
-                        name="accountbalance"
-                        value={formData.accountbalance}
-                        onChange={handleInputChange}
-                        onBlur={handleBlur}
-                        placeholder='AccountBalance'
-                      />
-                    ) : (
-                      formData.accountbalance
-                    )}
+                <TableCell align="center" colSpan={2}>
+                      {totalLoanData.accountBalance}  ₹
                   </TableCell>
                   <TableCell align="center" colSpan={3}>
-                    100000 Rs
+                    {totalLoanData.totalEmi}  ₹
                   </TableCell>
 
                   <TableCell align="center" colSpan={3}>
-                    1000 Rs
+                  {totalLoanData.totalShares}  ₹
+                  </TableCell>
+                  <TableCell align="center" colSpan={3}  onClick={handleClick}>
+                  {formData.isEditing ? (
+                  <input
+                    className='mt-2 accountBalance'
+                    type="text"
+                    name="projectedAmount"
+                    value={formData.projectedAmount}
+                    onChange={handleInputChange}
+                    onBlur={handleBlur}
+                    placeholder='projectedAmount'
+                  />
+                ) : (
+                  totalLoanData.projectedAmount 
+                )} &nbsp; ₹
                   </TableCell>
                   <TableCell align="center" colSpan={3}>
-                    1000000 Rs
-                  </TableCell>
-                  <TableCell align="center" colSpan={3}>
-                    96
+                  {totalLoanData.totalLoan}
                   </TableCell>
                 </TableRow>
                 <TableRow></TableRow>
@@ -325,19 +266,19 @@ export default function Member() {
                 <td>{ele.end_date}</td>
                 <td>{ele.total_loan}</td>
                 <td>{ele.processing_fee}</td>
-                <td>{ele.amt_disbursed}</td>
                 <td>{ele.period} {ele.unit} </td>
                 <td>{ele.emi}</td>
                 <td>{ele.interest}</td>
-                <td>{ele.amount_recivable}</td>
-                <td>{ele.amount_recivied}</td>
+                <td>{ele.total_repayment}</td>
+                <td>{ele.amount_received}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </Paper>
 
-      {data.length ?         <TablePagination
+      {data.length ?        
+       <TablePagination
       component="div"
       count={totalCount}
       page={page}

@@ -7,6 +7,7 @@ import './Login.css';
 import { AdminLogin,MemberLogin } from '../../config/LoginService'
 import { setStoreState } from '../../store/shared';
 import { useSelector } from 'react-redux';
+
 export default function Login({USER}) { 
     console.log("user",USER);
     const navigate = useNavigate();
