@@ -1,16 +1,20 @@
 import React,{useState}   from 'react'
 import image1 from '../../assets/images/IMG-20231211-WA0019.jpg';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Swal from 'sweetalert2'
 import {jwtDecode} from 'jwt-decode';
 import './Login.css';
 import { AdminLogin,MemberLogin } from '../../config/LoginService'
 import { setStoreState } from '../../store/shared';
 import { useSelector } from 'react-redux';
+import { forgetService } from '../../config/LoginService'
 
 export default function Login({USER}) { 
     console.log("user",USER);
     const navigate = useNavigate();
+    const {params} = useParams()
+
+    console.log("params",params)
     
 
     const regForName = RegExp(/^[A-Za-z]{3,30}$/);
@@ -26,6 +30,8 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
         email: "",
         password: "",
     });
+
+
 
       const handler = (event) => {
         const { name, value } = event.target;
@@ -52,6 +58,59 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
         setRegisterCredentials({ ...registerCredentials, [name]: value });
     };
 
+    const forget = () => { 
+        // check if email is not empty and pass to forgetService route
+        if (USER === "Admin User") {
+            if (registerCredentials.email !== '') {
+                forgetService({ email: registerCredentials.email })
+                    .then(res => {
+                        if (res.data.err === 0) {
+                            console.log("res",res)
+                            navigate("/forgetpassword", { state: { email: registerCredentials.email, otp: res.data.otp,isAdmin:true } })
+                        }
+                        else {
+                            Swal.fire({ 
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: res.data.msg,
+                              })
+                        }
+                    })
+            } else {
+                Swal.fire(
+                    'Empty!!?',
+                    'Please enter Email!!!',
+                    'question'
+                  )
+            }
+        }else{
+            if (registerCredentials.memberId !== '') {
+                forgetService({ memberId: registerCredentials.memberId })
+                    .then(res => {
+                        if (res.data.err === 0) {
+                            console.log("res",res)
+                            navigate("/forgetpassword", { state: { email: res.data.email, otp: res.data.otp,isAdmin:false } })
+                        }
+                        else {
+                            Swal.fire({ 
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: res.data.msg,
+                              })
+                        }
+                    })
+            } else {
+                Swal.fire(
+                    'Empty!!?',
+                    'Please enter Email!!!',
+                    'question'
+                  )
+            }
+        }
+
+
+    }
+
     const handleLoginClick = async () => {
         try {
             console.log("in login",registerCredentials,USER)
@@ -68,7 +127,7 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
                             setStoreState("USER_LOGIN",decode)
                             localStorage.setItem("_token", res.data.payload[0].token);
                             console.log("decode",decode)
-                            navigate("/home")
+                            navigate("/")
                           
                         }). catch (error=> {
                             console.log("error in catch",error)
@@ -199,9 +258,17 @@ const regForpassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]
 
                                 <br />
                                 <br />
+                                <div class="container text-center">
 
-                                <button className='login_btn'  onClick={() => handleLoginClick()}>Login</button>
 
+                                <div class="row">
+                                    <div class="col-6">.<button className='login_btn'  onClick={() => handleLoginClick()}>Login</button></div>
+                                    <div class="col-6"><p className='m-2' onClick={() => forget()} style={{color:"blue",cursor: "pointer",fontSize:"17px"}}>Forget password?</p></div>
+                                </div>
+                                </div>
+
+                                
+                                
 
                             </div>
 

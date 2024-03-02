@@ -13,3 +13,10 @@ export function MemberRegister(data){
     return axios.post(`${MAIN_URL}member/registerMember`,data) 
 }
 
+export function forgetService(data){
+    return axios.post(`${MAIN_URL}member/forgetservice`,data) 
+}
+
+export function resetPassService(data){
+    return axios.post(`${MAIN_URL}member/resetPassService`,data) 
+}

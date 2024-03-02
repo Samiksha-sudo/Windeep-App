@@ -7,7 +7,8 @@
   import { Provider } from 'react-redux';
   import { store } from './store/configration';
   import { PersistGate } from 'redux-persist/integration/react';
-  // import Invoice from './components/Invoice';
+  import image2 from  "./assets/images/Vanilla-1.4s-280px.gif"
+  // import Invoice from './components/Invoice    Vanilla-1.4s-280px.gif';
   const Login = lazy(() => import('./components/login/Login'))
   const Home = lazy(() => import('./components/Home/home'));
   const Dashboard = lazy(()=>import('./components/DashboardFile/dashboard'))
@@ -25,7 +26,9 @@
   const ViewRequests = lazy(()=>import('./components/member/ViewRequests'))
   const ParentTabs = lazy(()=>import('./components/member/ParentTabs'));
   const Add = lazy(() => import('./components/add/Add'))
-  const MemberViewRequests = lazy(() => import('./components/member/MemberViewRequests'))
+  const Forgetpassword = lazy(()=>import('./components/member/Forgetpassword'))
+  const MemberViewRequests = lazy(() => import('./components/member/MemberViewRequests'));
+  const WhatsApp = lazy(() => import('./components/member/WhatsApp'));
   
   const USER_TYPES = {
     PUBLIC:"Public User",
@@ -41,11 +44,9 @@
           <Router>
             <ErrorBoundary>
               <Suspense fallback={
-                <div className="d-flex justify-content-center" style={{height:"100vh",width:"100%",background:"white"}}>
-                <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c8529f91-daaf-4193-ba2e-0c153785b4ab/d9fndfy-7ceccbdb-2a9c-4b0d-b10f-2a32bfb4cdd8.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2M4NTI5ZjkxLWRhYWYtNDE5My1iYTJlLTBjMTUzNzg1YjRhYlwvZDlmbmRmeS03Y2VjY2JkYi0yYTljLTRiMGQtYjEwZi0yYTMyYmZiNGNkZDguZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.OWXyGQSzsBACLG_bus4F-1IpGMnP-FwQZ841OLnwO5U" className="images" alt="..."
-                  ></img>
+                <div className="d-flex align-items-center justify-content-center vh-100" >
+                <img src={image2}></img>
                   </div>
-                  
                   }> 
                   <PersistGate persistor={store.__PERSISTOR} loading={null}>
                     <Navbaar  /> 
@@ -56,7 +57,7 @@
                       <Route path="/admin/login" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.PUBLIC,USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL]}><Login 
                       USER={USER_TYPES.ADMIN_USER}/></AuthorizedElement>} />
 
-                      <Route path="/home" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER]}><Home CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+                  
 
                       <Route path="/" element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER, USER_TYPES.NORMAL,USER_TYPES.PUBLIC]}><Dashboard  CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}  /></AuthorizedElement>} />
 
@@ -91,6 +92,9 @@
                       
                       <Route path='/add' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER]}><Add CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 
+                      <Route path='/forgetpassword' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER]}><Forgetpassword CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
+
+                      <Route path='/whatsAppMessages' element={<AuthorizedElement allowedUserTypes={[USER_TYPES.ADMIN_USER]}><WhatsApp CURRENT_USER={CURRENT_USER}  USER_TYPES={USER_TYPES}/></AuthorizedElement>} />
 
                       <Route path="*" element={<img width="100%" height="750px" src="https://miro.medium.com/max/1400/1*zBFBJktPD3_z0S_35kO5Hg.gif" alt="not found" />} />
 

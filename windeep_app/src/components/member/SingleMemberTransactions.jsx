@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import Footer from '../Footer/Footer'
-import Navbaar from '../Navbaar/Navbaar'
-import Button from '@mui/material/Button';
-import {  Paper,Table,TableCell,TableContainer,TableHead,Checkbox, FormControlLabel,TableBody,TableRow ,Box,Drawer,List,ListItem,ListItemButton,ListItemText,Grid,TextField,Alert} from '@mui/material'
+import {  Paper,Table,TableCell,TableContainer,TableHead,Checkbox, FormControlLabel,TableBody,TableRow ,Box,Drawer,List,ListItem,ListItemButton,ListItemText,Grid,TextField,Alert,  Accordion,
+  AccordionSummary,
+  Typography,
+  AccordionDetails,Button} from '@mui/material'
 import { useParams,useLocation } from 'react-router-dom';
 import image1 from "../../assets/images/photoImage.jpg";
 import { useNavigate } from "react-router-dom";
@@ -13,13 +13,17 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import styles from "./BasicInfo.module.css";
 import { useSelector } from 'react-redux';
-// import {singleLoanDetails} from "../../utils/database/data"
-export default function SingleMemberTransactions({CURRENT_USER,USER_TYPES}) {
+import Calculator from "../calculator/CalculatorMain";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+export default function SingleMemberTransactions() {
   const navigate = useNavigate();
   const location = useLocation();
   const { id ,loan_id,loan_type} = useParams();
   const UserToken = useSelector((state) => state.loggedInUserReducer);
+  const [anchorToggle, setAnchorToggle] = useState(false);
+  const [ProfileData, setProfileData] = useState({});
   console.log(id)
   const regForNumber = /^[0-9]*$/;
 
@@ -32,8 +36,8 @@ let columns = []
       { id: 'period', label: 'Period', minWidth: 100 },       
       { id: 'EMI', label: 'EMI', minWidth: 100 },
       { id: 'Principal', label: 'Principal', minWidth: 100 },
-      { id: 'balance', label: 'Balance', minWidth: 100 },
       { id: 'Interest', label: 'Int.', minWidth: 100 },
+      { id: 'balance', label: 'Balance', minWidth: 100 },
       { id: 'Fee/Fine', label: 'Fee Fine', minWidth: 100 },
       { id: 'onlyInterest', label: 'Only Interest', minWidth: 100 },
       { id: 'Remarks', label: 'Remarks', minWidth: 100 },
@@ -47,8 +51,8 @@ let columns = []
       { id: 'period', label: 'Period', minWidth: 100 },       
       { id: 'EMI', label: 'EMI', minWidth: 100 },
       { id: 'Principal', label: 'Principal', minWidth: 100 },
-      { id: 'balance', label: 'Balance', minWidth: 100 },
       { id: 'Interest', label: 'Int.', minWidth: 100 },
+      { id: 'balance', label: 'Balance', minWidth: 100 },
       { id: 'Fee/Fine', label: 'Fee Fine', minWidth: 100 },
       { id: 'onlyInterest', label: 'Only Interest', minWidth: 100 },
       { id: 'Remarks', label: 'Remarks', minWidth: 100 }        
@@ -61,35 +65,41 @@ let columns = []
       {
       emi: "emi",label:"EMI", minWidth: 70 
     },
-
     {
-      emi: "balance",label:"Balance", minWidth: 70 
-    },      
+      emi: "principal",label:"Principal", minWidth: 70 
+    },
     {
       emi: "interest",label:"Int.", minWidth: 70 
     },
     {
-      emi: "principal",label:"Principal", minWidth: 70 
-    }
+      emi: "balance",label:"Balance", minWidth: 70 
+    }    
+
+
 
   ]
 
-      const profileData = [
-        {     
-          image: image1,
-          Name   :  "Ganesh Khenat",
-          Mobile :   9518354701,
-          Email  :   "ganeshkhenat@gmail.com",
-          "Date of Birth": "12-06-2023",
-          "Aadhar Card" :"202592951240",
-          "Pan card":"ABCD00002",
-          "IFSC code": "HDFC12345"
-         }
-      ];
+  useEffect(() => {
+    fetch('http://localhost:9000/member/listSingleMember', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id:id   
+        })
+      })
+        .then(response => response.json())
+        .then(result => {
+          console.log('API Response: ', result.payload[0].result);
+          setProfileData(result.payload[0].result[0])
+        })
+        .catch(error => {
+          console.error('API Error:', error);
+        });
+       
+  }, []);
 
-      const isActiveButton = (buttonLink) => {
-        return location.pathname.endsWith(buttonLink);
-      };
 
       const [state, setState] = React.useState({
         top: false,
@@ -137,9 +147,7 @@ let columns = []
         setState({ ...state, [anchor]: open });
       };
 
-      const handleRowClick = (id,memberLink) => {
-        navigate(`/member/${id}/${memberLink}`);
-      };
+
       const handleAddClick = () => {
         // Assuming you have an API endpoint for inserting data
         setIsGridOpen(!isGridOpen);
@@ -198,13 +206,27 @@ let columns = []
           // (e.g., if the date is nested, use e.date or e.value or similar)
           setFormData((prevData) => ({
             ...prevData,
-            date: e.format('MM-DD-YYYY'), // Adjust this line accordingly
+            date: e.target.value, // Adjust this line accordingly
           }));
           setFormData((prevData) => ({
             ...prevData,
-            date: e.format('MM-DD-YYYY'),
+            date: e.target.value,
           }));
         }
+      };
+
+      const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = date.getDate() + 1;
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+    
+        // Pad day and month with leading zeros if necessary
+        const formattedDay = day < 10 ? '0' + day : day;
+        const formattedMonth = month < 10 ? '0' + month : month;
+    
+        // Return formatted date string
+        return `${formattedDay}-${formattedMonth}-${year}`;
       };
 
       const handleSubmit = async () => {
@@ -380,7 +402,7 @@ let columns = []
           console.log('API Response:=================================', result.payload[0].result);
           // Set the data received from the API to the state
           if( result.payload[0].result.length == 0){
-            navigate(`/member/${id}/loan`);
+            navigate(`/member/${id}/pages`);
           }
           setLoanTransactionDetails(result.payload[0].result);
           setErrors({ ...errors, submit_error: "" })
@@ -495,7 +517,7 @@ let columns = []
           onKeyDown={toggleDrawer(anchor, false)}
         >
             <List>
-            {Object.entries(profileData[0]).map(([key, value], index) => (
+            {Object.entries(ProfileData).map(([key, value], index) => (
         <ListItem key={index} disablePadding>
           <ListItemButton>
             {key === 'image' ? (
@@ -514,29 +536,53 @@ let columns = []
     return (
         <>
 
-            {['Profile'].map((anchor) => (
-  <React.Fragment key={anchor}>
-    <Button onClick={toggleDrawer(anchor, true)} sx = {{marginLeft: "1%"}}>
-    <img
-      src="/static/media/photoImage.85cade08451cf2e3683a.jpg"
-      alt="Profile"
-      className="profile_img"
-    />
-    </Button>
-    <Drawer
-      anchor={anchor}
-      open={state[anchor]}
-      onClose={toggleDrawer(anchor, false)}
-    >
-      {list(anchor)}
-    </Drawer>
-  </React.Fragment>
-))}
+      <div className="mt-3" style={{ display: "flex", justifyContent: "space-between" }}>
+      
+      <React.Fragment>
+        <Button
+          onClick={(e) => toggleDrawer(e,true)}
+          sx={{ marginLeft: "1%" }}
+        >
+          <img
+            src="/static/media/photoImage.85cade08451cf2e3683a.jpg"
+            alt="Profile"
+            className="profile_img"
+          />
+        </Button> 
+        <Drawer
+          anchor={'left'}
+          open={anchorToggle}
+          onClose={(e) => toggleDrawer(e,false)}
+        >
+          {list()}
+        </Drawer>
+      </React.Fragment>
+      <div>
+      <h2>
+        {console.log("ProfileData----",ProfileData)}
+            {ProfileData.Name}
+      </h2>
+      </div>
+      <div>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ArrowDownwardIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
+        >
+          <Typography>Calculator</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Calculator/>
+        </AccordionDetails>
+      </Accordion>
+      </div>
+      </div>
 
                <Paper sx={{ width: "100%", padding: "1%" }}>  
 
 
-        {CURRENT_USER != "Normal User" ? <Button variant='contained' sx={{ my: 2 }} onClick={handleAddClick}>Add</Button>:""}
+        {UserToken.isAdmin ? <Button variant='contained' sx={{ my: 2 }} onClick={handleAddClick}>Add</Button>:""}
 
         <Button variant='contained' sx={{ my: 2,ml:3 }} onClick={navigateToLoanPage} color="secondary" >Back</Button>
         {errors.submit_error.length !== 0 && (
@@ -586,20 +632,20 @@ let columns = []
            <>
           <Grid container spacing={2} sx={{ display: 'flex', flexDirection: 'row' ,ml:4 }}>
             <Grid item xs={12} sm={3} sx={{ maxWidth: "16% !important", my: 1 ,ml:4}}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['DatePicker']}>
-                  <DatePicker
-                    label="Date"
-                    onChange={handleInputChange}
-                    name="startDate"
-                    placeholder="Select Date"
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
+            <input
+          type="date"
+          id="date"
+          name="date"
+          value={formData.date}
+          onChange={handleInputChange}
+          className={styles.inputData}
+          style={styles.input}
+          />
+    <i class="calendar-icon fas fa-calendar-alt"></i>
             </Grid>
             <Grid item xs={12} sm={3} sx={{ maxWidth: "16% !important", my: 2 }}>
               <TextField
-                type="text"
+                type="number"
                 name="Fee"
                 value={formData.Fee}
                 helperText={errors.errFee}
@@ -611,7 +657,7 @@ let columns = []
             </Grid>
             <Grid item xs={12} sm={3} sx={{ maxWidth: "16% !important", my: 2 }}>
               <TextField
-                type="text"
+                type="number"
                 name="onlyInterest"
                 helperText={errors.erronlyInterest}
                 value={formData.onlyInterest}
@@ -669,6 +715,7 @@ let columns = []
               name="adminRemarksCheckbox"
               checked={formData.adminRemarksCheckbox}
               onChange={handleInputChange}
+              disabled={formData.onlyInterest !== ''} 
             />
           }
           label="Please select checkBox if you want to auto Populate Data"
@@ -702,12 +749,12 @@ let columns = []
           key={ele.memberId}
           style={{ cursor: 'pointer' }}
         >
-          <td style={{ width: '11%' }}>{ele.date}</td>
+          <td style={{ width: '11%' }}>{formatDate(ele.date)}</td>
           <td style={{ width: '4%' }}>{ele.period}</td>
           <td style={{ width: '8%' }}>{ele.emi}</td>
           <td style={{ width: '8%' }}>{ele.principal}</td>
-          <td style={{ width: '5%' }}>{ele.balance}</td>
           <td style={{ width: '6%' }}>{ele.interest}</td>
+          <td style={{ width: '5%' }}>{ele.balance}</td>
           <td style={{ width: '4%' }}>{ele.fee_fine}</td>
           <td style={{ width: '4%' }}>{ele.only_interest}</td>
 
@@ -746,9 +793,9 @@ let columns = []
   >
     <td style={{ width: '2%' }}>{ele.month}</td>
     <td style={{ width: '3%' }}>{ele.emi}</td>
-    <td style={{ width: '2%' }}>{ele.balance}</td>
-    <td style={{ width: '2%' }}>{ele.interest}</td>
     <td style={{ width: '2%' }}>{ele.principal}</td>
+    <td style={{ width: '2%' }}>{ele.interest}</td>
+    <td style={{ width: '2%' }}>{ele.balance}</td>
   </tr>
 ))}
     </tbody>

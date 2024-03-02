@@ -34,7 +34,7 @@ const regForAadharCard = RegExp(/^[0-9]{12}$/);
 const regForPanCard = RegExp(/^[A-Z]{5}[0-9]{4}[A-Z]$/);
 const regForMobile = RegExp(/^[0-9]{10}$/);
 const regForAccountNumber = RegExp(/^\d{14}$/)
-// const regForIFSCCode = RegExp(/^[A-Z]{4}0[A-Z0-9]{6}$/)
+const regForIFSCCode = RegExp(/^[A-Z]{4}0[A-Z0-9]{6}$/)
 
 export default function BasicInfo() {
     const [errors, setErrors] = useState({
@@ -74,7 +74,8 @@ export default function BasicInfo() {
 
     // For Validation
     const handler = (event) => {
-        const { name, value } = event.target;
+        let { name, value } = event.target;
+        value = value.trim()
         let error = "";
         switch (name) {
             case "fullName":

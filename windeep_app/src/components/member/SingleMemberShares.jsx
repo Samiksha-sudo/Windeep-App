@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Footer from "../Footer/Footer";
-import Navbaar from "../Navbaar/Navbaar";
 import Button from "@mui/material/Button";
 import {
   Paper,
@@ -9,29 +7,19 @@ import {
   Grid,
   Alert
 } from "@mui/material";
-import { useParams,useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import image1 from "../../assets/images/photoImage.jpg";
 import styles from "./BasicInfo.module.css";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useSelector } from 'react-redux';
-// import { Client } from 'whatsapp-web.js';
-// const client = new Client();
-// client.on('ready', () => {
-//     const number = "9518354701"; // Replace with the recipient's phone number
-//     const text = "Hey Samiksha"; // Your message
-//     const chatId = number.substring(1) + "@c.us"; // Format the chat ID
-//     client.sendMessage(chatId, text); // Send the message
-// });
-
 
 export default function SingleMembershares() {
-  const navigate = useNavigate();
   const { id } = useParams();
   const UserToken = useSelector((state) => state.loggedInUserReducer);
 
-  let columns = []
+  let columns = [];
 
   if(UserToken.isAdmin ){
 
@@ -77,7 +65,7 @@ export default function SingleMembershares() {
   const [totalCount, setTotalCount] = useState(0);
   const [formData, setFormData] = useState({
     id: "",
-    date: new Date(), // Initialize date with current date
+    date: "", // Initialize date with current date
     member_id: "",
     share_id: "",
     monthly_contribution: "",
@@ -126,6 +114,7 @@ export default function SingleMembershares() {
   
 
   const handleEdit = (row) => {
+    console.log("row in edit",row)
     setFormData({
       id: row.id,
       date: row.start_date,
@@ -164,7 +153,7 @@ export default function SingleMembershares() {
         // Optionally, you can reset the form fields after successful insertion
         setFormData({
           id: "",
-          date: new Date(),
+          date: "",
           member_id: "",
           share_id: "",
           monthly_contribution: "",
@@ -250,7 +239,7 @@ export default function SingleMembershares() {
         // Optionally, you can reset the form fields after successful deletion
         setFormData({
           id: "",
-          date: new Date(),
+          date: "",
           member_id: "",
           share_id: "",
           monthly_contribution: "",
@@ -331,7 +320,9 @@ export default function SingleMembershares() {
     const limit = rowsPerPage;
     const offset = page * rowsPerPage;
 
-    if((formData.monthly_contribution != "" && formData.total_contribution != "") || formData.bonus){
+    console.log("error",errors)
+
+    if((formData.monthly_contribution != "" && formData.total_contribution != "" && errors.errmonthlyContribution == "") || formData.bonus){
       await fetch("http://localhost:9000/member/shares/add", {
         method: "POST",
         headers: {
@@ -345,7 +336,7 @@ export default function SingleMembershares() {
           // Optionally, you can reset the form fields after successful insertion
           setFormData({
             id: "",
-            date: new Date(),
+            date: "",
             member_id: "",
             share_id: "",
             monthly_contribution: "",
@@ -433,13 +424,15 @@ export default function SingleMembershares() {
     let error = "";
 
     switch (name) {
-        case "monthly_contribution":
-            error = value.length > 0 ? "" : "Please Enter monthly Contribution";
-            setErrors({ ...errors, errmonthlyContribution: error });
-            break;
+      case "monthly_contribution":
+
+        // Check if the value is a valid number
+        error = value.length > 0 && !isNaN(Number(value)) ? "" : "Please enter a valid monthly contribution";
+        setErrors({ ...errors, errmonthlyContribution: error });
+        break;
 
         case "total_contribution":
-            error = value.length > 0 ? "" : "Please Enter total Contribution";
+            error = value.length > 0 && !isNaN(Number(value)) ? "" : "Please Enter valid total Contribution";
             setErrors({ ...errors, errtotalContribution: error });
             break;
 
@@ -467,12 +460,11 @@ export default function SingleMembershares() {
         // Handle changes from date picker
         setFormData((prevData) => ({
             ...prevData,
-            date: e, // Assuming the date picker provides the date object directly
+            date: e.target.value, // Assuming the date picker provides the date object directly
         }));
     }
 
-    // Set the error state
-    setErrors({ ...errors, [name]: error });
+    
 };
 
 
@@ -508,7 +500,7 @@ export default function SingleMembershares() {
     
         setFormData({
           id: "",
-          date: new Date(),
+          date: "",
           member_id: "",
           monthly_contribution: monthly_contribution,
           total_contribution: totalContribution,
@@ -621,6 +613,20 @@ export default function SingleMembershares() {
     setPage(0);
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate() + 1;
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    // Pad day and month with leading zeros if necessary
+    const formattedDay = day < 10 ? '0' + day : day;
+    const formattedMonth = month < 10 ? '0' + month : month;
+
+    // Return formatted date string
+    return `${formattedDay}-${formattedMonth}-${year}`;
+  };
+
   return (
     <>
       <Paper sx={{ width: "100%", padding: "1%" }}>
@@ -658,14 +664,15 @@ export default function SingleMembershares() {
               sm={3}
               sx={{ maxWidth: "16% !important", my: 1 }}
             >
-<input
+        <input
           type="date"
           id="date"
           name="date"
+          value={formData.date}
           onChange={handleInputChange}
           className={styles.inputData}
           style={styles.input}
-        />
+          />
     <i class="calendar-icon fas fa-calendar-alt"></i>
             </Grid>
             <Grid
@@ -675,7 +682,7 @@ export default function SingleMembershares() {
               sx={{ maxWidth: "16% !important", my: 2 }}
             >
               <TextField
-                type="text"
+                type="number"
                 helperText={errors.errmonthlyContribution}
                 name="monthly_contribution"
                 value={formData.monthly_contribution}
@@ -698,7 +705,7 @@ export default function SingleMembershares() {
               sx={{ maxWidth: "16% !important", my: 2 }}
             >
               <TextField
-                type="text"
+                type="number"
                 helperText={errors.errtotalContribution}
                 name="total_contribution"
                 value={formData.total_contribution}
@@ -721,7 +728,7 @@ export default function SingleMembershares() {
               sx={{ maxWidth: "16% !important", my: 2 }}
             >
               <TextField
-                type="text"
+                type="number"
                 name="bonus"
                 value={formData.bonus}
                 helperText={errors.errBonus}
@@ -811,7 +818,7 @@ export default function SingleMembershares() {
               data.map((fle) => (
                 <>
                   <tr key={fle.date} style={{ cursor: "pointer" }}>
-                    <td>{fle.start_date}</td>
+                  <td>{formatDate(fle.start_date)}</td>
                     <td>{fle.monthly_contribution}</td>
                     <td>{fle.total_contribution}</td>
                     <td>{fle.bonus}</td>

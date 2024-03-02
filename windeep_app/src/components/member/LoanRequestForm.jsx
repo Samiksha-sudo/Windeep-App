@@ -366,7 +366,7 @@ const calculateloan = () => {
             period: "",
             emi: "",
             unit: "months",
-            processingFee: "1.5" // Reset processing fee to "1.5"
+            processingFee: "1.5"
         });
         setErrors({
             errAmount: "",
@@ -390,7 +390,8 @@ const calculateloan = () => {
               interest: "",
               period: "",
               emi: "",
-              unit: "months"
+              unit: "months",
+              processingFee: "1.5"
           });
       }
   }, [resetData, registerCredentials]);
@@ -491,9 +492,7 @@ const calculateloan = () => {
               </FormControl>
 
 
-
-                <Grid container spacing={1} >
-                    <Grid item className="text-center">
+              <div className="d-flex justify-content-around mt-3">
                     <Button
                           variant="contained"
                           color="info"
@@ -502,8 +501,6 @@ const calculateloan = () => {
                       >
                           Calculate EMI
                       </Button>
-                    </Grid>
-                    <Grid item className="text-center">
 
                         <Button
                             variant="contained"
@@ -512,19 +509,7 @@ const calculateloan = () => {
                         >
                             Send Request
                         </Button>
-                        </Grid>
 
-                        <Grid item className="text-center">
-
-                            <Button
-                                variant="outlined"
-                                color="info"
-                                onClick={handleViewRequestsClick}
-                            >
-                                View Request
-                            </Button>
-                            </Grid>
-                    <Grid item className="text-center">
 
                     <Button
                           variant="contained"
@@ -535,9 +520,9 @@ const calculateloan = () => {
                       >
                           Reset
                       </Button>
-                    </Grid>
+                
                     
-                </Grid>
+                </div>
               </div>
           </Container>
           {isDivVisible && (

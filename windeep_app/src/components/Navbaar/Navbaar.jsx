@@ -7,6 +7,7 @@ import Badge from '@mui/material/Badge';
 import { styled } from '@mui/material/styles';
 import { getStoreState, setStoreState } from '../../store/shared';
 import { useSelector } from 'react-redux';
+import imag2 from "../../assets/images/windeepImage.png"
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -33,8 +34,8 @@ export default function Navbaar() {
         <div className="header">
           <nav className="navbar navbar-expand-lg navbar-dark " style={{ background: '#000000' }}>
             <div className="container-fluid">
-              <Link className="navbar-brand font-weight-bold" to="/" style={{ fontSize: "1.6rem" }}>
-                Win<span style={{ color: "red" }}>Deep</span>
+              <Link className="navbar-brand font-weight-bold" to="/" >
+                <img src={imag2} style={{ width: "120px" }} ></img>
               </Link>
               <button
                 className="navbar-toggler"
@@ -56,22 +57,27 @@ export default function Navbaar() {
                       {UserToken.isAdmin ?
                         <>
                                           <li className="nav-item">
-                    <NavLink className="nav-link" activclassname="active_navbar" to="/home">
+                    <NavLink className="nav-link" activclassname="active_navbar" to="/" style={{ fontSize: "1.2rem" }}>
                       Home
                     </NavLink>
                   </li>
                           <li className="nav-item ml-3">
-                            <NavLink className="nav-link" activclassname="active_navbar" to="/member">
+                            <NavLink className="nav-link" activclassname="active_navbar" to="/member" style={{ fontSize: "1.2rem" }}>
                               Member
                             </NavLink>
                           </li>
                           <li className="nav-item ml-auto">
-                            <NavLink className="nav-link" activclassname="active_navbar" to="/viewRequests">
+                            <NavLink className="nav-link" activclassname="active_navbar" to="/viewRequests" style={{ fontSize: "1.2rem" }}>
                               View Requests
                             </NavLink>
                           </li>
+                          <li className="nav-item ml-auto">
+                            <NavLink className="nav-link" activclassname="active_navbar" to="/whatsAppMessages" style={{ fontSize: "1.2rem" }}>
+                              Notification
+                            </NavLink>
+                          </li>
                           <li className="nav-item ml-3">
-                            <NavLink className="nav-link" activclassname="active_navbar" to="/add">
+                            <NavLink className="nav-link" activclassname="active_navbar" to="/add" style={{ fontSize: "1.2rem" }}>
                               Add
                             </NavLink>
                           </li>
@@ -81,14 +87,14 @@ export default function Navbaar() {
                         <>
                         <li className="nav-item ml-3">
   
-                          <NavLink className="nav-link" activeClassName="active_navbar" to={`/member/${UserToken.member_id}/pages`}>
+                          <NavLink className="nav-link" activeClassName="active_navbar" to={`/member/${UserToken.member_id}/pages`} style={{ fontSize: "1.2rem" }}>
                               Member
                           </NavLink>
                         </li>
                       </>
                       }
                       <li className="nav-item ml-auto">
-                        <NavLink className="nav-link" activclassname="active_navbar" to="/" onClick={()=>logout()}>
+                        <NavLink className="nav-link" activclassname="active_navbar" to="/" onClick={()=>logout()} style={{ fontSize: "1.2rem" }}>
                           Logout
                         </NavLink>
                       </li>
@@ -96,22 +102,22 @@ export default function Navbaar() {
                   ) : (
                     <>
                     <li className="nav-item">
-                    <NavLink className="nav-link" activclassname="active_navbar" to="/">
+                    <NavLink className="nav-link" activclassname="active_navbar" to="/" style={{ fontSize: "1.2rem" }}>
                       Home
                     </NavLink>
                   </li>
                       <li className="nav-item ml-3">
-                        <NavLink className="nav-link" activclassname="active_navbar" to="/member/login">
+                        <NavLink className="nav-link" activclassname="active_navbar" to="/member/login" style={{ fontSize: "1.2rem" }}>
                           Member Login
                         </NavLink>
                       </li>
                       <li className="nav-item ml-3">
-                        <NavLink className="nav-link" activclassname="active_navbar" to="/admin/login">
+                        <NavLink className="nav-link" activclassname="active_navbar" to="/admin/login" style={{ fontSize: "1.2rem" }}>
                           Admin Login
                         </NavLink>
                       </li>
                       <li className="nav-item ml-3">
-                        <NavLink className="nav-link" activclassname="active_navbar" to="/add">
+                        <NavLink className="nav-link" activclassname="active_navbar" to="/add" style={{ fontSize: "1.2rem" }}>
                           Member SignUp
                         </NavLink>
                       </li>

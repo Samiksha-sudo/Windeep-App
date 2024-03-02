@@ -343,7 +343,7 @@ export default function SingleLoanCalculator({ CURRENT_USER, USER_TYPES }) {
             />
           </FormControl>
 
-          <Grid container spacing={15}>
+          {/* <Grid container spacing={15}>
             <Grid item className="text-center">
               <Button
                 variant="contained"
@@ -379,7 +379,39 @@ export default function SingleLoanCalculator({ CURRENT_USER, USER_TYPES }) {
                 Detail
               </Button>
             </Grid>
-          </Grid>
+          </Grid> */}
+          <div className="d-flex justify-content-around mt-5">
+          <Button
+                variant="contained"
+                color="info"
+                onClick={() => calculateloan()}
+                className={styles.button_fun}
+              >
+                Calculate
+              </Button>
+
+              <Button
+                variant="contained"
+                sx={{
+                  color: "white",
+                  backgroundColor: "grey",
+                  borderColor: "black",
+                }}
+                onClick={resetValues}
+                onMouseOver={changeBackground}
+              >
+                Reset
+              </Button>
+              <Button
+                variant="contained"
+                color="info"
+                onClick={() => detailLoan()}
+                className={styles.button_fun}
+                disabled={!iscalculated}
+              >
+                Detail
+              </Button>
+          </div>
         </div>
       </Container>
 

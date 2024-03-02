@@ -128,47 +128,48 @@ const handleChangeRowsPerPage = (event,key) => {
           <Button variant='contained' sx={{ margin: "2%"}}>Pending Requests</Button>
             {console.log("viewRequests",viewRequests)}
             <Paper sx={{ width: "80%", padding: "1%", margin: "auto" }}>
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        {columns.map((ele) => (
-          <th key={ele.label}>{ele.label} </th>
-        ))}
-      </tr>
-    </thead>
-    <tbody>
-      {viewRequests.Pending.length ? (
-        viewRequests.Pending.map((fle) => (
-          <tr key={fle.amount} style={{ cursor: "pointer" }}>
-            <td>{fle.amount}</td>
-            <td>{fle.period}</td>
-            <td>{fle.unit}</td>
-            <td>{fle.emi}</td>
-            <td>{fle.processing_fee}</td>
-            <td>{fle.admin_reason}</td>
-            <td>{fle.member_name}</td>
-          </tr>
-        ))
-      ) : (
-        <tr>
-          <td colSpan={columns.length}>No data available</td>
-        </tr>
-      )}
-    </tbody>
-  </table>
-</Paper>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    {columns.map((ele) => (
+                      <th key={ele.label}>{ele.label} </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {viewRequests.Pending.length > 0 ? (
+                    viewRequests.Pending.map((fle) => (
+                      <tr key={fle.amount} style={{ cursor: "pointer" }}>
+                        <td>{fle.amount}</td>
+                        <td>{fle.period}</td>
+                        <td>{fle.unit}</td>
+                        <td>{fle.emi}</td>
+                        <td>{fle.processing_fee}</td>
+                        <td>{fle.admin_reason}</td>
+                        <td>{fle.member_name}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={columns.length}>No data available</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+          </Paper>
 
 
-            {viewRequests.Pending.length &&         
-              <TablePagination
-                component="div"
-                count={viewRequests.Pending.length}
-                page={page.Pending}
-                onPageChange={(e,v)=>handleChangePage(e,v,"Pending")}
-                rowsPerPage={rowsPerPage.Pending}
-                rowsPerPageOptions={[10, 20, 30, 40, 50]}
-                onRowsPerPageChange={(e,v)=>handleChangeRowsPerPage(e,v,"Pending")}
-          />}
+          {viewRequests.Pending.length > 0 &&         
+    <TablePagination
+        component="div"
+        count={viewRequests.Pending.length}
+        page={page.Pending}
+        onPageChange={(e,v)=>handleChangePage(e,v,"Pending")}
+        rowsPerPage={rowsPerPage.Pending}
+        rowsPerPageOptions={[10, 20, 30, 40, 50]}
+        onRowsPerPageChange={(e,v)=>handleChangeRowsPerPage(e,v,"Pending")}
+    />
+}
 
           <br/>
           <Button variant='contained' sx={{ margin: "2%"}} color="success">Accepted Requests</Button>

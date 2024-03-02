@@ -174,7 +174,7 @@ export default function Member() {
             className="form-control search_member"
             id="cdb-autocomplete"
             placeholder="Search"
-            name="totalLoan"
+            name="search"
             value={formData.search}
             onChange={handleInputChange}
           />
@@ -203,7 +203,7 @@ export default function Member() {
                 </TableRow>
                 <TableRow>
                 <TableCell align="center" colSpan={2}>
-                      {totalLoanData.accountBalance}  ₹
+                      {totalLoanData.projectedAmount}  ₹
                   </TableCell>
                   <TableCell align="center" colSpan={3}>
                     {totalLoanData.totalEmi}  ₹

@@ -8,17 +8,6 @@ import Calculator from "../calculator/CalculatorMain";
 import {
   Accordion,
   AccordionSummary,
-  Paper,
-  Grid,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TablePagination,
-  TableRow,
-  TextField,
-  TableHead,
-  Autocomplete,
   Typography,
   Box,
   Tabs,
@@ -67,7 +56,7 @@ export default function ParentTabs() {
         .then(response => response.json())
         .then(result => {
           console.log('API Response: ', result.payload[0].result);
-          setProfileData(result.payload[0].result)
+          setProfileData(result.payload[0].result[0])
         })
         .catch(error => {
           console.error('API Error:', error);
@@ -113,19 +102,20 @@ export default function ParentTabs() {
   };
 
   const list = () => {
-    if (!ProfileData || !ProfileData[0]) {
+    if (!ProfileData ) {
       return null; 
     }
   
     return (
       <Box
-        sx={{ width: 350 }}
+        sx={{ width: 350,marginTop:"5rem" }}
         role="presentation"
         onClick={(e)=>toggleDrawer(e,false)}
         onKeyDown={(e)=>toggleDrawer(e,false)}
       >
         <List>
-          {Object.entries(ProfileData[0]).map(([key, value], index) => (
+          {console.log("data",Object.entries(ProfileData))}
+          {Object.entries(ProfileData).map(([key, value], index) => (
             <ListItem key={index} disablePadding>
               <ListItemButton>
                 {key === "image" ? (
@@ -165,6 +155,12 @@ export default function ParentTabs() {
               {list()}
             </Drawer>
           </React.Fragment>
+          <div>
+          <h2>
+            {console.log("ProfileData----",ProfileData)}
+                {ProfileData.Name}
+          </h2>
+          </div>
         <div>
           <Accordion>
             <AccordionSummary

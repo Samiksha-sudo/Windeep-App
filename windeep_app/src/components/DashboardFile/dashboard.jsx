@@ -7,6 +7,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { styled } from '@mui/material/styles';
 import image1 from '../../assets/images/IMG-20231211-WA0019.jpg';
 import image2 from "../../assets/images/photoImage.jpg";
+// import 'bootstrap/dist/css/bootstrap.min.css'
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -128,3 +129,5 @@ function AuthorizedElement({ CURRENT_USER,children, allowedUserTypes }) {
     return <>{children}</>;
   } 
 }
+
+// 9823230290
